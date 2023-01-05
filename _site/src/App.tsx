@@ -1,4 +1,4 @@
-import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { HashRouter, Outlet, Route, Routes } from 'react-router-dom';
 import IndexPage from './IndexPage';
 import SetPage from './SetPage';
 
@@ -10,14 +10,14 @@ const Layout = () => (
 
 function App() {
   return (
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <HashRouter basename="/">
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="set/:theme/:slug" element={<SetPage />} />
           <Route index element={<IndexPage />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

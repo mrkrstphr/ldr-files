@@ -33,7 +33,7 @@ type Params = {
 function setupCanvas(modelPath: string, target: HTMLElement, canvas: HTMLCanvasElement) {
   let startTime = new Date();
 
-  let model = '/models/' + modelPath;
+  let model = `${process.env.PUBLIC_URL}/models/${modelPath}`;
 
   const title = modelPath.substring(modelPath.lastIndexOf('/') + 1).replace('.ldr', '');
 
@@ -112,6 +112,7 @@ function setupCanvas(modelPath: string, target: HTMLElement, canvas: HTMLCanvasE
 
   LDR.Studs.makeGenerators('', 0, 1);
   ldrLoader = new LDRLoader(onLoad, null, {
+    baseUrl: process.env.PUBLIC_URL,
     cleanUpPrimitivesAndSubParts: false,
     onFileLoadedd: (file, contents) => {
       if (file === model) {

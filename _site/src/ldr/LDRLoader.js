@@ -111,7 +111,10 @@ const LDRLoader = function (onLoad, storage, options) {
         // Account for both .DAT and .dat
         return [id];
       }
-      return ['/ldraw/' + id, '/ldraw_unofficial/' + id];
+      return [
+        (options.baseUrl ?? '') + '/ldraw/' + id,
+        (options.baseUrl ?? '') + '/ldraw_unofficial/' + id,
+      ];
     };
 
   this.idToTextureUrl =

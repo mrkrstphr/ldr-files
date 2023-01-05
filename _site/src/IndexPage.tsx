@@ -7,7 +7,7 @@ function IndexPage() {
   const [sets, setSets] = useState<SetList | null>();
 
   useEffect(() => {
-    fetch('index.json')
+    fetch(`${process.env.PUBLIC_URL}/index.json`)
       .then((response) => response.json())
       .then((data) => {
         setSets(data);
