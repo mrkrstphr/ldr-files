@@ -10,7 +10,7 @@ const Layout = () => (
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="set/:theme/:slug" element={<SetPage />} />
