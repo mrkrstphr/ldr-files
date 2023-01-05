@@ -16,7 +16,7 @@ jobs:
       - name: Install and Build 🔧
         run: |
           cd _site && npm ci
-          cd _site && npm run build
+          npm run build
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
