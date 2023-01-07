@@ -155,18 +155,21 @@ export default function SetPage() {
   }, [canvasRef, theme, slug]);
 
   return (
-    <div className="flex flex-col h-full space-y-4">
-      <h2 className="text-2xl">
-        {theme.replace('_', ' ')} / {slug.replace('_', ' ')}
-      </h2>
-      <div ref={targetRef} className="flex-1">
-        <canvas ref={canvasRef}></canvas>
+    <>
+      <div className="flex flex-1 flex-col space-y-4">
+        <h2 className="text-2xl">
+          {theme.replace('_', ' ')} / {slug.replace('_', ' ')}
+        </h2>
+        <div ref={targetRef} className="flex-1">
+          <canvas ref={canvasRef}></canvas>
+        </div>
       </div>
+
       <p>
         Rendering code from{' '}
         <a href="https://github.com/LasseD/buildinginstructions.js/">buildinginstructions.js</a>.
         Part models provided by the <a href="https://www.ldraw.org/">LDraw project</a>.
       </p>
-    </div>
+    </>
   );
 }

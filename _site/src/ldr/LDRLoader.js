@@ -11,6 +11,7 @@ import {
   Vector2,
   Vector3,
 } from 'three';
+import OutlinePass from './OutlinePass';
 
 /**
  * @author Lasse Deleuran | c-mt.dk and brickhub.org
