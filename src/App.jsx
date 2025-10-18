@@ -49,8 +49,9 @@ function Category({ defaultExpanded = false, name, models, onSelectModel }) {
 }
 
 function App() {
+  const model = new URLSearchParams(window.location.search).get('model');
   const [selectedModel, setSelectedModel] = useState(
-    new URLSearchParams(window.location.search).get('model'),
+    model ? decodeURIComponent(model) : null,
   );
   const [models, setModels] = useState({});
 
