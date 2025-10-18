@@ -1,0 +1,19 @@
+import tailwindcss from '@tailwindcss/vite';
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+import DynamicPublicDirectory from 'vite-multiple-assets';
+
+const dirAssets = [
+  {
+    input: 'models/**',
+    output: '/models',
+    flatten: false,
+  },
+  'models.json',
+];
+
+export default defineConfig({
+  plugins: [react(), tailwindcss(), DynamicPublicDirectory(dirAssets)],
+  publicDir: false,
+  base: '/ldr-files/',
+});

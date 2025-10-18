@@ -1,0 +1,17 @@
+@import 'tailwindcss';
+
+html,
+body {
+  height: 100dvh;
+}
+
+a,
+a:visited {
+  @apply text-indigo-500 dark:text-indigo-700;
+  text-decoration: underline;
+}
+
+a:hover,
+a:visited:hover {
+  @apply text-indigo-700 dark:text-indigo-500;
+}
