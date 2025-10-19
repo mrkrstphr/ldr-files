@@ -95,8 +95,6 @@ const Ldr = ({ modelFile }) => {
       );
       lDrawLoader.smoothNormals = true;
 
-      console.log('loading model', fileContents);
-
       lDrawLoader.parse(
         fileContents,
         function (group2) {
