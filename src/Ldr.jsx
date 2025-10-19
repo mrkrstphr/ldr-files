@@ -39,10 +39,10 @@ const Ldr = ({ modelFile }) => {
     if (!containerRef.current) return;
     const container = containerRef.current;
 
-    (async () => {
-      let camera, scene, renderer, controls;
-      let model;
+    let camera, scene, renderer, controls;
+    let model;
 
+    (async () => {
       // if container has a child element of canvas, destroy it
       if (container.firstChild) {
         container.removeChild(container.firstChild);
@@ -123,6 +123,20 @@ const Ldr = ({ modelFile }) => {
         onError,
       );
     })();
+
+    function onWindowResize() {
+      const container = containerRef.current;
+      if (!container) return;
+
+      camera.aspect = container.offsetWidth / container.offsetHeight;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(container.offsetWidth, container.offsetHeight);
+    }
+
+    window.addEventListener('resize', onWindowResize);
+
+    return () => window.removeEventListener('resize', onWindowResize);
   }, [containerRef, isDarkMode, modelFile]);
 
   useEffect(() => {}, [loading]);
