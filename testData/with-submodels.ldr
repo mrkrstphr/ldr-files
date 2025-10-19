@@ -1,0 +1,17 @@
+0 FILE
+1 16 10 0 10 1 0 0 0 1 0 0 0 1 submodel 1
+1 16 90 0 10 1 0 0 0 1 0 0 0 1 submodel 2
+1 16 -70 0 10 1 0 0 0 1 0 0 0 1 submodel 3
+0 NOFILE
+0 FILE submodel 1
+1 191 -20 -24 0 1 0 0 0 1 0 0 0 1 3005.dat
+1 4 0 -24 0 1 0 0 0 1 0 0 0 1 3005.dat
+0 NOFILE
+0 FILE submodel 2
+1 0 -20 -24 0 1 0 0 0 1 0 0 0 1 3005.dat
+1 15 0 -24 0 1 0 0 0 1 0 0 0 1 3005.dat
+0 NOFILE
+0 FILE submodel 3
+1 1 -20 -24 0 1 0 0 0 1 0 0 0 1 3005.dat
+1 10 0 -24 0 1 0 0 0 1 0 0 0 1 3005.dat
+0 NOFILE
