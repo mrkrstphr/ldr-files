@@ -5,9 +5,12 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { LDrawLoader } from 'three/addons/loaders/LDrawLoader.js';
 import { LDrawConditionalLineMaterial } from 'three/addons/materials/LDrawConditionalLineMaterial.js';
+import GUI from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import { Metadata } from './components/Metadata.jsx';
 import { usePrefersDarkMode } from './hooks/usePrefersDarkMode.js';
 import { getModelMetadata } from './lib/getModelMetadata.js';
+import { getRootSubmodels } from './lib/getRootSubmodels.js';
+import { getSubmodel } from './lib/getSubmodel.js';
 
 const Ldr = ({ modelFile }) => {
   const isDarkMode = usePrefersDarkMode();
@@ -17,6 +20,8 @@ const Ldr = ({ modelFile }) => {
   const [fileContents, setFileContents] = useState();
   const [metadata, setMetadata] = useState({});
   const [metadataOpen, setMetadataOpen] = useState(false);
+  const [subModels, setSubModels] = useState([]);
+  const [selectedSubModel, setSelectedSubModel] = useState('');
 
   useEffect(() => {
     if (!modelFile) return;
@@ -25,6 +30,9 @@ const Ldr = ({ modelFile }) => {
       .then((text) => {
         setFileContents(text);
         setMetadata(getModelMetadata(text));
+        const submodels = getRootSubmodels(text);
+        console.log('submodels', submodels);
+        setSubModels(submodels);
       });
   }, [modelFile]);
 
@@ -42,21 +50,21 @@ const Ldr = ({ modelFile }) => {
     let camera, scene, renderer, controls;
     let model;
 
+    function animate() {
+      controls.update();
+      render();
+    }
+
+    function render() {
+      renderer.render(scene, camera);
+    }
+
     if (!fileContents) return;
 
     (async () => {
       // if container has a child element of canvas, destroy it
       if (container.firstChild) {
         container.removeChild(container.firstChild);
-      }
-
-      function animate() {
-        controls.update();
-        render();
-      }
-
-      function render() {
-        renderer.render(scene, camera);
       }
 
       camera = new three.PerspectiveCamera(
@@ -96,7 +104,9 @@ const Ldr = ({ modelFile }) => {
       lDrawLoader.smoothNormals = true;
 
       lDrawLoader.parse(
-        fileContents,
+        selectedSubModel
+          ? getSubmodel(fileContents, selectedSubModel)
+          : fileContents,
         function (group2) {
           setLoading(false);
           if (model) {
@@ -118,6 +128,16 @@ const Ldr = ({ modelFile }) => {
             .multiplyScalar(radius)
             .add(controls.target0);
           controls.reset();
+
+          if (subModels.length > 1) {
+            const gui = new GUI({ container: containerRef.current });
+            gui
+              .add({ 'Sub Model': selectedSubModel }, 'Sub Model', [
+                '',
+                ...subModels,
+              ])
+              .onChange((value) => setSelectedSubModel(value));
+          }
         },
         undefined,
         onError,
@@ -134,10 +154,11 @@ const Ldr = ({ modelFile }) => {
       renderer.setSize(container.offsetWidth, container.offsetHeight);
     }
 
+    // window.removeEventListener('resize', onWindowResize);
     window.addEventListener('resize', onWindowResize);
 
     return () => window.removeEventListener('resize', onWindowResize);
-  }, [containerRef, isDarkMode, fileContents]);
+  }, [containerRef, fileContents, isDarkMode, selectedSubModel, subModels]);
 
   useEffect(() => {}, [loading]);
 
