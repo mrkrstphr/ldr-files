@@ -93,7 +93,7 @@ function App() {
       <div
         className={`${
           mobileMenuOpen ? 'block' : 'hidden'
-        } absolute top-0 left-0 p-4 w-full h-dvh bg-stone-950 z-50`}
+        } absolute top-0 left-0 p-4 w-full h-dvh bg-gray-50 dark:bg-stone-950 z-50`}
       >
         <div className="mb-4 flex items-center gap-2">
           <h2 className="text-2xl font-bold flex-1">Models</h2>

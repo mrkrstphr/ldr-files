@@ -7,7 +7,7 @@ body {
 
 a,
 a:visited {
-  @apply text-indigo-500 dark:text-indigo-700;
+  @apply text-indigo-500 dark:text-indigo-300;
   text-decoration: underline;
 }
 
