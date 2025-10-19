@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FiChevronDown, FiChevronUp, FiMenu, FiX } from 'react-icons/fi';
 import Ldr from './Ldr';
+import { MenuToggle } from './components/MenuToggle';
 
 function prettyModelName(name) {
   return name.replace('.ldr', '').substring(name.lastIndexOf('/') + 1);
@@ -97,12 +98,9 @@ function App() {
       >
         <div className="mb-4 flex items-center gap-2">
           <h2 className="text-2xl font-bold flex-1">Models</h2>
-          <div
-            className="text-2xl cursor-pointer lg:hidden bg-stone-200/50 hover:bg-stone-200 text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-400  dark:bg-stone-900/50 dark:hover:bg-stone-900 rounded p-2"
-            onClick={() => setMobileMenuOpen(false)}
-          >
+          <MenuToggle onClick={() => setMobileMenuOpen(false)}>
             <FiX />
-          </div>
+          </MenuToggle>
         </div>
         <Menu
           models={models}
@@ -115,12 +113,12 @@ function App() {
       <div className="grid grid-rows-[auto_1fr_auto] grid-cols-[auto_1fr] h-dvh min-h-0">
         <div className="h-24 flex items-center gap-2 p-4 bg-stone-50 dark:bg-stone-950 col-start-1 col-end-4">
           <h1 className="text-4xl flex-1">LDR Files</h1>
-          <div
-            className="text-2xl cursor-pointer lg:hidden bg-stone-200/50 hover:bg-stone-200 text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-400  dark:bg-stone-900/50 dark:hover:bg-stone-900 rounded p-2"
+          <MenuToggle
+            className="lg:hidden"
             onClick={() => setMobileMenuOpen(true)}
           >
             <FiMenu />
-          </div>
+          </MenuToggle>
         </div>
         <div className="w-64 p-4 bg-stone-50 dark:bg-stone-950 overflow-auto col-start-1 col-end-2 hidden lg:block">
           <div className="text-lg font-bold mb-1">Models</div>
@@ -132,7 +130,7 @@ function App() {
           )}
         </div>
         <div className="col-start-1 col-end-4 p-4 lg:pl-64 bg-stone-50 text-center dark:bg-stone-950">
-          Models are &copy; The LEGO Group. This softare uses the{' '}
+          Models are &copy; The LEGO Group. This software uses the{' '}
           <a href="https://ldraw.org">LDraw Parts Library</a>.
         </div>
       </div>
