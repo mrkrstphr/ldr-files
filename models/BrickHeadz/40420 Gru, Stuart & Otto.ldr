@@ -4,7 +4,7 @@
 0 Author: Kristopher Wilson
 0 Notes: Missing printed pieces which were replaced by their unprinted base part.
 0 Labels: incomplete
-0 _submodels: otto, stuart, gru
+0 _submodels: Gru, Stuart, Otto
 0 NumOfBricks:  244
 1 16 -0.024590 0.000000 -0.139340 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 1.000000 otto
 1 16 180.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 1.000000 stuart
