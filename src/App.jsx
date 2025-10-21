@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FiChevronDown, FiChevronUp, FiMenu, FiX } from 'react-icons/fi';
-import Ldr from './Ldr';
 import { MenuToggle } from './components/MenuToggle';
+import { Model } from './Model';
 
 function prettyModelName(name) {
   return name.replace('.ldr', '').substring(name.lastIndexOf('/') + 1);
@@ -125,9 +125,7 @@ function App() {
           <Menu models={models} onSelectModel={setSelectedModel} />
         </div>
         <div className="col-start-2 col-end-4 min-h-0">
-          {selectedModel && (
-            <Ldr key={selectedModel} modelFile={selectedModel} />
-          )}
+          {selectedModel && <Model modelFile={selectedModel} />}
         </div>
         <div className="col-start-1 col-end-4 p-4 lg:pl-64 bg-stone-50 text-center dark:bg-stone-950">
           Models are &copy; The LEGO Group. This software uses the{' '}
