@@ -2,12 +2,17 @@ import { useEffect, useState } from 'react';
 import { getModelMetadata } from '../lib/getModelMetadata';
 
 export function useModel(slug) {
-  const [metadata, setMetadata] = useState({});
-  const [submodels, setSubmodels] = useState([]);
-  const [contents, setContents] = useState();
-  const [title, setTitle] = useState();
+  const [data, setData] = useState({ loading: true });
+  // const [metadata, setMetadata] = useState({});
+  // const [submodels, setSubmodels] = useState([]);
+  // const [altModels, setAltModels] = useState([]);
+  // const [contents, setContents] = useState();
+  // const [defaultModel, setDefaultModel] = useState();
+  // const [title, setTitle] = useState();
 
   useEffect(() => {
+    setData({ loading: true });
+
     fetch('/ldr-files/models.json')
       .then((res) => res.json())
       .then((data) => {
@@ -24,23 +29,33 @@ export function useModel(slug) {
 
         fetch(`/ldr-files/models/${model.file}`)
           .then((res) => res.text())
-          .then((text) => {
-            setContents(text);
+          .then((contents) => {
+            // setContents(contents);
             const title = model.file
               .substring(0, model.file.lastIndexOf('.'))
               .replace('/', ' / ');
-            const metadata = getModelMetadata(text);
+            const metadata = getModelMetadata(contents);
             const submodels = (metadata._submodels ?? '')
               .split(',')
               .map((s) => s.trim())
               .filter((s) => s.length > 0);
+            const altModels = (metadata._altModels ?? '')
+              .split(',')
+              .map((s) => s.trim())
+              .filter((s) => s.length > 0);
 
-            setMetadata(metadata);
-            setSubmodels(submodels);
-            setTitle(title);
+            setData({
+              loading: false,
+              contents,
+              defaultModel: metadata._defaultModel,
+              metadata,
+              submodels,
+              altModels,
+              title,
+            });
           });
       });
   }, [slug]);
 
-  return { contents, metadata, submodels, title };
+  return data;
 }

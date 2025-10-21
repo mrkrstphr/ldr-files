@@ -9,7 +9,8 @@ import { Metadata } from './Metadata';
 
 export function Model() {
   const { modelSlug } = useParams();
-  const { contents, metadata, submodels, title } = useModel(modelSlug);
+  const { contents, metadata, submodels, altModels, defaultModel, title } =
+    useModel(modelSlug);
   const [loading, setLoading] = useState(true);
   const [selectedSubModel, setSelectedSubModel] = useState('');
   const [metadataOpen, setMetadataOpen] = useState(false);
@@ -21,7 +22,16 @@ export function Model() {
     setSelectedSubModel('');
   }, [modelSlug]);
 
+  useEffect(() => {
+    if (defaultModel) setSelectedSubModel(defaultModel);
+  }, [defaultModel]);
+
   useEffect(() => setLoading(true), [contents, selectedSubModel]);
+
+  const modelSelection =
+    submodels && submodels.length > 0 ? submodels : altModels;
+  const modelSelectionLabel =
+    submodels && submodels.length > 0 ? 'Submodels' : 'Alternative Models';
 
   return (
     <div className="h-full relative">
@@ -37,19 +47,19 @@ export function Model() {
             </div>
           </div>
           <div className={`mt-2 ${metadataOpen ? 'block' : 'hidden'}`}>
-            <Metadata metadata={metadata} />
+            {metadata && <Metadata metadata={metadata} />}
           </div>
         </div>
-        {submodels.length > 0 && (
+        {(modelSelection ?? []).length > 0 && (
           <div className="flex justify-end w-full">
             <div className="inline-flex items-center gap-2 m-4">
-              <div>Submodels:</div>
+              <div>{modelSelectionLabel}:</div>
               <select
                 onChange={(e) => setSelectedSubModel(e.target.value)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
-                <option value="">-- Full Model --</option>
-                {submodels.map((subModel) => (
+                {!defaultModel && <option value="">-- Full Model --</option>}
+                {modelSelection.map((subModel) => (
                   <option
                     key={subModel}
                     value={subModel}
