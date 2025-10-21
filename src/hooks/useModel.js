@@ -44,6 +44,11 @@ export function useModel(slug) {
               .map((s) => s.trim())
               .filter((s) => s.length > 0);
 
+            metadata.Labels = (metadata.Labels ?? '')
+              .split(',')
+              .map((s) => s.trim())
+              .filter((s) => s.length > 0);
+
             setData({
               loading: false,
               contents,

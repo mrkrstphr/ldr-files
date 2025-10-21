@@ -39,6 +39,11 @@ export function Model() {
         <div className="bg-stone-300/50 dark:bg-stone-950/50 p-2 lg:rounded-tl-lg">
           <div className="flex items-center gap-2">
             <div>{title}</div>
+            {(metadata?.Labels ?? []).includes('incomplete') && (
+              <div className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300">
+                Incomplete
+              </div>
+            )}
             <div
               className="cursor-pointer"
               onClick={() => setMetadataOpen(!metadataOpen)}
