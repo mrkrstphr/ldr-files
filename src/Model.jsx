@@ -15,6 +15,7 @@ export function Model({ modelFile }) {
 
   useEffect(() => {
     if (!modelFile) return;
+    setLoading(true);
     fetch(`models/${modelFile}`)
       .then((res) => res.text())
       .then((text) => {
@@ -26,6 +27,7 @@ export function Model({ modelFile }) {
           .map((s) => s.trim())
           .filter((s) => s.length > 0);
         setSubModels(submodels);
+        setSelectedSubModel('');
       });
   }, [modelFile]);
 
@@ -88,6 +90,7 @@ export function Model({ modelFile }) {
         </div>
       )}
       <Ldr
+        key={modelFile + selectedSubModel}
         model={
           selectedSubModel
             ? getSubmodel(fileContents, selectedSubModel)
