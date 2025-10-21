@@ -7,6 +7,7 @@
 0 FlexibleBrickControlPointUnitLength -1
 0 FlexibleBrickLockedControlPoint 
 0 NumOfBricks: 205
+0 _submodels: road runner, wile e. coyote
 0 STEP
 1 16 -140.000000 0.000000 -40.093020 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 1.000000 road runner
 1 16 20.000000 0.000000 -20.000000 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 1.000000 wile e. coyote
