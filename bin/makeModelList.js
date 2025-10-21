@@ -2,6 +2,14 @@ import fs from 'fs/promises';
 
 const models = {};
 
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .substring(0, text.lastIndexOf('.'))
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 function readdir(path) {
   return fs.readdir(path).then((v) => {
     return Promise.all(
@@ -25,7 +33,9 @@ function readdir(path) {
                 models[theme] = [];
               }
 
-              models[theme].push(filePath.replace('models/', ''));
+              const modelFile = filePath.replace('models/', '');
+
+              models[theme].push({ file: modelFile, slug: slugify(modelFile) });
             }
           }
 

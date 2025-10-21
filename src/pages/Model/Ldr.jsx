@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import * as three from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { LDrawLoader } from 'three/addons/loaders/LDrawLoader.js';
-import { LDrawConditionalLineMaterial } from 'three/addons/materials/LDrawConditionalLineMaterial.js';
-import { usePrefersDarkMode } from './hooks/usePrefersDarkMode.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment';
+import { LDrawLoader } from 'three/addons/loaders/LDrawLoader';
+import { LDrawConditionalLineMaterial } from 'three/addons/materials/LDrawConditionalLineMaterial';
+import { usePrefersDarkMode } from '../../hooks/usePrefersDarkMode';
 
 const Ldr = ({ model: modelContents, onModelLoaded }) => {
   const isDarkMode = usePrefersDarkMode();

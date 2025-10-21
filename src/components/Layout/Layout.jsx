@@ -1,0 +1,53 @@
+import { useState } from 'react';
+import { FiMenu, FiX } from 'react-icons/fi';
+import { Link, Outlet } from 'react-router-dom';
+import { useModels } from '../../hooks/useModels';
+import { MenuToggle } from '../MenuToggle';
+import { Menu } from './Menu';
+
+export function Layout() {
+  const { models } = useModels();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  return (
+    <div className="relative h-dvh">
+      <div
+        className={`${
+          mobileMenuOpen ? 'block' : 'hidden'
+        } absolute top-0 left-0 p-4 w-full h-dvh bg-gray-50 dark:bg-stone-950 z-50`}
+      >
+        <div className="mb-4 flex items-center gap-2">
+          <h2 className="text-2xl font-bold flex-1">Models</h2>
+          <MenuToggle onClick={() => setMobileMenuOpen(false)}>
+            <FiX />
+          </MenuToggle>
+        </div>
+        <Menu models={models} onSelectModel={() => setMobileMenuOpen(false)} />
+      </div>
+      <div className="grid grid-rows-[auto_1fr_auto] grid-cols-[auto_1fr] h-dvh min-h-0">
+        <div className="h-24 flex items-center gap-2 p-4 bg-stone-50 dark:bg-stone-950 col-start-1 col-end-4">
+          <h1 className="text-4xl flex-1">
+            <Link to="/">LDR Files</Link>
+          </h1>
+          <MenuToggle
+            className="lg:hidden"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <FiMenu />
+          </MenuToggle>
+        </div>
+        <div className="w-64 p-4 bg-stone-50 dark:bg-stone-950 overflow-auto col-start-1 col-end-2 hidden lg:block">
+          <div className="text-lg font-bold mb-1">Models</div>
+          <Menu models={models} />
+        </div>
+        <div className="col-start-2 col-end-4 min-h-0">
+          <Outlet />
+        </div>
+        <div className="col-start-1 col-end-4 p-4 lg:pl-64 bg-stone-50 text-center dark:bg-stone-950">
+          Models are &copy; The LEGO Group. This software uses the{' '}
+          <a href="https://ldraw.org">LDraw Parts Library</a>.
+        </div>
+      </div>
+    </div>
+  );
+}

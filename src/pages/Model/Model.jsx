@@ -1,53 +1,34 @@
 import { useEffect, useState } from 'react';
 import { FiInfo, FiX } from 'react-icons/fi';
-import { Metadata } from './components/Metadata.jsx';
+import { useParams } from 'react-router-dom';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
+import { useModel } from '../../hooks/useModel';
+import { getSubmodel } from '../../lib/getSubmodel';
 import Ldr from './Ldr';
-import { getModelMetadata } from './lib/getModelMetadata.js';
-import { getSubmodel } from './lib/getSubmodel.js';
+import { Metadata } from './Metadata';
 
-export function Model({ modelFile }) {
-  const [fileContents, setFileContents] = useState();
+export function Model() {
+  const { modelSlug } = useParams();
+  const { contents, metadata, submodels, title } = useModel(modelSlug);
   const [loading, setLoading] = useState(true);
-  const [metadata, setMetadata] = useState({});
-  const [subModels, setSubModels] = useState([]);
   const [selectedSubModel, setSelectedSubModel] = useState('');
   const [metadataOpen, setMetadataOpen] = useState(false);
 
-  useEffect(() => {
-    if (!modelFile) return;
-    setLoading(true);
-    fetch(`models/${modelFile}`)
-      .then((res) => res.text())
-      .then((text) => {
-        setFileContents(text);
-        const metadata = getModelMetadata(text);
-        setMetadata(metadata);
-        const submodels = (metadata._submodels ?? '')
-          .split(',')
-          .map((s) => s.trim())
-          .filter((s) => s.length > 0);
-        setSubModels(submodels);
-        setSelectedSubModel('');
-      });
-  }, [modelFile]);
-
-  useEffect(() => {
-    setLoading(true);
-  }, [selectedSubModel]);
-
-  const decodedModel = decodeURIComponent(modelFile);
-  const prettyModelName = decodedModel
-    .substring(0, decodedModel.lastIndexOf('.'))
-    .replace('/', ' / ');
-
   const handleOnModelLoaded = () => setLoading(false);
+
+  useEffect(() => {
+    setLoading(true);
+    setSelectedSubModel('');
+  }, [modelSlug]);
+
+  useEffect(() => setLoading(true), [contents, selectedSubModel]);
 
   return (
     <div className="h-full relative">
       <div className="absolute z-40 w-full">
         <div className="bg-stone-300/50 dark:bg-stone-950/50 p-2">
           <div className="flex items-center gap-2">
-            <div>{prettyModelName}</div>
+            <div>{title}</div>
             <div
               className="cursor-pointer"
               onClick={() => setMetadataOpen(!metadataOpen)}
@@ -59,7 +40,7 @@ export function Model({ modelFile }) {
             <Metadata metadata={metadata} />
           </div>
         </div>
-        {subModels.length > 0 && (
+        {submodels.length > 0 && (
           <div className="flex justify-end w-full">
             <div className="inline-flex items-center gap-2 m-4">
               <div>Submodels:</div>
@@ -68,7 +49,7 @@ export function Model({ modelFile }) {
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
                 <option value="">-- Full Model --</option>
-                {subModels.map((subModel) => (
+                {submodels.map((subModel) => (
                   <option
                     key={subModel}
                     value={subModel}
@@ -83,18 +64,14 @@ export function Model({ modelFile }) {
         )}
       </div>
       {loading && (
-        <div className="absolute z-40 top-[50%] left-0 text-center w-full">
-          <span className="bg-stone-300/50 dark:bg-stone-950/50 p-4">
-            Loading...
-          </span>
+        <div className="absolute z-40 top-[50%] left-0 flex items-center justify-center w-full">
+          <LoadingSpinner />
         </div>
       )}
       <Ldr
-        key={modelFile + selectedSubModel}
+        key={modelSlug + selectedSubModel}
         model={
-          selectedSubModel
-            ? getSubmodel(fileContents, selectedSubModel)
-            : fileContents
+          selectedSubModel ? getSubmodel(contents, selectedSubModel) : contents
         }
         onModelLoaded={handleOnModelLoaded}
       />
