@@ -3,6 +3,7 @@
 html,
 body {
   height: 100dvh;
+  @apply bg-gray-100 dark:bg-stone-950 dark:text-gray-100;
 }
 
 a,

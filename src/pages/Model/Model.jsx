@@ -26,7 +26,7 @@ export function Model() {
   return (
     <div className="h-full relative">
       <div className="absolute z-40 w-full">
-        <div className="bg-stone-300/50 dark:bg-stone-950/50 p-2">
+        <div className="bg-stone-300/50 dark:bg-stone-950/50 p-2 lg:rounded-tl-lg">
           <div className="flex items-center gap-2">
             <div>{title}</div>
             <div

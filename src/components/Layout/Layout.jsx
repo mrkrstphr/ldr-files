@@ -14,7 +14,7 @@ export function Layout() {
       <div
         className={`${
           mobileMenuOpen ? 'block' : 'hidden'
-        } absolute top-0 left-0 p-4 w-full h-dvh bg-gray-50 dark:bg-stone-950 z-50`}
+        } absolute top-0 left-0 p-4 w-full h-dvh z-50`}
       >
         <div className="mb-4 flex items-center gap-2">
           <h2 className="text-2xl font-bold flex-1">Models</h2>
@@ -25,7 +25,7 @@ export function Layout() {
         <Menu models={models} onSelectModel={() => setMobileMenuOpen(false)} />
       </div>
       <div className="grid grid-rows-[auto_1fr_auto] grid-cols-[auto_1fr] h-dvh min-h-0">
-        <div className="h-24 flex items-center gap-2 p-4 bg-stone-50 dark:bg-stone-950 col-start-1 col-end-4">
+        <div className="h-24 flex items-center gap-2 p-4 col-start-1 col-end-4">
           <h1 className="text-4xl flex-1">
             <Link to="/">LDR Files</Link>
           </h1>
@@ -36,14 +36,14 @@ export function Layout() {
             <FiMenu />
           </MenuToggle>
         </div>
-        <div className="w-64 p-4 bg-stone-50 dark:bg-stone-950 overflow-auto col-start-1 col-end-2 hidden lg:block">
+        <div className="w-64 p-4 overflow-auto col-start-1 col-end-2 hidden lg:block">
           <div className="text-lg font-bold mb-1">Models</div>
           <Menu models={models} />
         </div>
-        <div className="col-start-2 col-end-4 min-h-0">
+        <div className="col-start-2 col-end-4 min-h-0 overflow-y-auto lg:rounded-tl-lg lg:rounded-bl-lg bg-white dark:bg-stone-900 dark:text-gray-100">
           <Outlet />
         </div>
-        <div className="col-start-1 col-end-4 p-4 lg:pl-64 bg-stone-50 text-center dark:bg-stone-950">
+        <div className="col-start-1 col-end-4 p-4 lg:pl-64 text-center">
           Models are &copy; The LEGO Group. This software uses the{' '}
           <a href="https://ldraw.org">LDraw Parts Library</a>.
         </div>
