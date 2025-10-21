@@ -3,7 +3,7 @@
 0 Name: Knuckles & Shadow
 0 Author: Kristopher Wilson
 0 NumOfBricks:  298
-0 _submodels: knuckles, shadow
+0 _submodels: Knuckles, Shadow
 0 CustomBrick
 0 FlexibleBrickControlPointUnitLength -1
 0 FlexibleBrickLockedControlPoint 
