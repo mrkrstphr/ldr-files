@@ -7,6 +7,7 @@ import { useModel } from '../../hooks/useModel';
 import { getSubmodel } from '../../lib/getSubmodel';
 import Ldr from './Ldr';
 import { Metadata } from './Metadata';
+import { PlaybackSpeed } from './PlaybackSpeed';
 
 export function Model() {
   const { modelSlug } = useParams();
@@ -20,7 +21,8 @@ export function Model() {
   const [currentBuildingStep, setCurrentBuildingStep] = useState(0);
   const [model, setModel] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [repeat, setRepeat] = useState(false);
+  const [playSpeed, setPlaySpeed] = useState(1);
+  const [looping, setLooping] = useState(false);
   const [direction, setDirection] = useState(1);
 
   const handleOnModelLoaded = useCallback((model) => {
@@ -78,7 +80,7 @@ export function Model() {
       intervalRef.current = setInterval(() => {
         setCurrentBuildingStep((step) => {
           if (step === numBuildingSteps) {
-            if (repeat) {
+            if (looping) {
               setDirection(-1);
               return step + direction * -1;
             }
@@ -94,7 +96,7 @@ export function Model() {
 
           return Math.min(step + direction, numBuildingSteps);
         });
-      }, 150);
+      }, 150 / playSpeed);
     }
 
     return () => {
@@ -103,7 +105,7 @@ export function Model() {
         intervalRef.current = null;
       }
     };
-  }, [direction, isPlaying, numBuildingSteps, repeat]);
+  }, [direction, isPlaying, looping, numBuildingSteps, playSpeed]);
 
   const modelSelection =
     submodels && submodels.length > 0 ? submodels : altModels;
@@ -138,7 +140,7 @@ export function Model() {
               <div>{modelSelectionLabel}:</div>
               <select
                 onChange={(e) => setSelectedSubModel(e.target.value)}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-stone-700 dark:border-stone-600 dark:placeholder-stone-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
                 {!defaultModel && <option value="">-- Full Model --</option>}
                 {modelSelection.map((subModel) => (
@@ -185,11 +187,14 @@ export function Model() {
               <FiPlay onClick={handlePlayClick} />
             )}
           </div>
+
+          <PlaybackSpeed playSpeed={playSpeed} setPlaySpeed={setPlaySpeed} />
+
           <div className="border cursor-pointer border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 rounded p-1">
-            {repeat ? (
-              <TbRepeat onClick={() => setRepeat(false)} />
+            {looping ? (
+              <TbRepeat onClick={() => setLooping(false)} />
             ) : (
-              <TbRepeatOff onClick={() => setRepeat(true)} />
+              <TbRepeatOff onClick={() => setLooping(true)} />
             )}
           </div>
         </div>
