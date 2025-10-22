@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { useModel } from '../../hooks/useModel';
 import { getSubmodel } from '../../lib/getSubmodel';
+import { Debug } from './Debug';
 import Ldr from './Ldr';
 import { Metadata } from './Metadata';
 import { PlaybackSpeed } from './PlaybackSpeed';
@@ -13,7 +14,9 @@ export function Model() {
   const { modelSlug } = useParams();
   const info = useModel(modelSlug);
   const { contents, metadata, submodels, altModels, defaultModel, title } =
-    useModel(modelSlug);
+    info;
+
+  // TODO: FIXME: holy state, batman... maybe use useReducer?
   const [loading, setLoading] = useState(true);
   const [selectedSubModel, setSelectedSubModel] = useState('');
   const [metadataOpen, setMetadataOpen] = useState(false);
@@ -44,6 +47,7 @@ export function Model() {
   const handleSelectSubModel = (e) => {
     setSelectedSubModel(e.target.value);
     setIsPlaying(false);
+    setLoading(true);
   };
 
   const handlePauseClick = () => {
@@ -72,7 +76,7 @@ export function Model() {
     if (defaultModel) setSelectedSubModel(defaultModel);
   }, [defaultModel]);
 
-  useEffect(() => setLoading(true), [contents, selectedSubModel]);
+  useEffect(() => setLoading(true), [contents]);
 
   const intervalRef = useRef(null);
 
@@ -160,6 +164,21 @@ export function Model() {
                 ))}
               </select>
             </div>
+          </div>
+        )}
+
+        {!loading && import.meta.env.DEV && (
+          <div className="text-right">
+            <Debug
+              info={info}
+              numBuildingSteps={numBuildingSteps}
+              currentBuildingStep={currentBuildingStep}
+              selectedSubModel={selectedSubModel}
+              isPlaying={isPlaying}
+              looping={looping}
+              direction={direction}
+              playSpeed={playSpeed}
+            />
           </div>
         )}
       </div>
