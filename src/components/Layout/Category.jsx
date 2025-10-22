@@ -3,7 +3,12 @@ import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { prettyModelName } from '../../lib/prettyModelName';
 
-export function Category({ defaultExpanded = false, name, models }) {
+export function Category({
+  defaultExpanded = false,
+  name,
+  models,
+  onSelectModel,
+}) {
   const [expanded, setExpanded] = useState(defaultExpanded);
 
   return (
@@ -25,7 +30,7 @@ export function Category({ defaultExpanded = false, name, models }) {
         <div className="ml-5">
           {models.map((model) => (
             <div key={model.file}>
-              <Link to={`/model/${model.slug}`}>
+              <Link to={`/model/${model.slug}`} onClick={onSelectModel}>
                 {prettyModelName(model.file)}
               </Link>
             </div>
