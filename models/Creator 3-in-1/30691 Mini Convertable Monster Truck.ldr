@@ -1,7 +1,12 @@
 0 30691 Mini Convertible Monster Truck
 0 SetNumber: 30691
 0 Name: Mini Convertible Monster Truck
+0 ReleaseYear: 2025
+0 Theme: Creator 3-in-1
 0 Author: Kristopher Wilson
+0 Notes: Only primary model
+0 Labels: incomplete
+0 _stepReady: true
 1 71 -49.999960 -54.000220 -17.999850 0.000000 0.000000 1.000000 0.000000 1.000005 0.000000 -1.000005 0.000000 0.000000 73562.dat
 1 71 -69.999920 -54.000220 -17.999820 0.000000 0.000000 1.000000 0.000000 1.000005 0.000000 -1.000005 0.000000 0.000000 30136.dat
 0 STEP
