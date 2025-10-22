@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FiInfo, FiPause, FiPlay, FiX } from 'react-icons/fi';
+import { TbRepeat, TbRepeatOff } from 'react-icons/tb';
 import { useParams } from 'react-router-dom';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { useModel } from '../../hooks/useModel';
@@ -9,6 +10,7 @@ import { Metadata } from './Metadata';
 
 export function Model() {
   const { modelSlug } = useParams();
+  const info = useModel(modelSlug);
   const { contents, metadata, submodels, altModels, defaultModel, title } =
     useModel(modelSlug);
   const [loading, setLoading] = useState(true);
@@ -18,12 +20,14 @@ export function Model() {
   const [currentBuildingStep, setCurrentBuildingStep] = useState(0);
   const [model, setModel] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [repeat, setRepeat] = useState(false);
+  const [direction, setDirection] = useState(1);
 
   const handleOnModelLoaded = useCallback((model) => {
     setLoading(false);
 
     setNumBuildingSteps(model.userData.numBuildingSteps || 1);
-    setCurrentBuildingStep(model.userData.numBuildingSteps || 0);
+    setCurrentBuildingStep(model.userData.numBuildingSteps || 1);
 
     setModel(model);
   }, []);
@@ -73,14 +77,22 @@ export function Model() {
     if (isPlaying) {
       intervalRef.current = setInterval(() => {
         setCurrentBuildingStep((step) => {
-          if (step >= numBuildingSteps) {
+          if (step === numBuildingSteps) {
+            if (repeat) {
+              setDirection(-1);
+              return step + direction * -1;
+            }
+
             clearInterval(intervalRef.current);
             intervalRef.current = null;
             setIsPlaying(false);
             return step;
+          } else if (step === 0 && direction === -1) {
+            setDirection(1);
+            return step + 1;
           }
 
-          return Math.min(step + 1, numBuildingSteps);
+          return Math.min(step + direction, numBuildingSteps);
         });
       }, 150);
     }
@@ -91,7 +103,7 @@ export function Model() {
         intervalRef.current = null;
       }
     };
-  }, [isPlaying, numBuildingSteps]);
+  }, [direction, isPlaying, numBuildingSteps, repeat]);
 
   const modelSelection =
     submodels && submodels.length > 0 ? submodels : altModels;
@@ -171,6 +183,13 @@ export function Model() {
               <FiPause onClick={handlePauseClick} />
             ) : (
               <FiPlay onClick={handlePlayClick} />
+            )}
+          </div>
+          <div className="border cursor-pointer border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 rounded p-1">
+            {repeat ? (
+              <TbRepeat onClick={() => setRepeat(false)} />
+            ) : (
+              <TbRepeatOff onClick={() => setRepeat(true)} />
             )}
           </div>
         </div>
