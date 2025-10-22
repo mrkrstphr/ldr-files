@@ -3,12 +3,6 @@ import { getModelMetadata } from '../lib/getModelMetadata';
 
 export function useModel(slug) {
   const [data, setData] = useState({ loading: true });
-  // const [metadata, setMetadata] = useState({});
-  // const [submodels, setSubmodels] = useState([]);
-  // const [altModels, setAltModels] = useState([]);
-  // const [contents, setContents] = useState();
-  // const [defaultModel, setDefaultModel] = useState();
-  // const [title, setTitle] = useState();
 
   useEffect(() => {
     setData({ loading: true });
