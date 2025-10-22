@@ -1,6 +1,8 @@
 0 FILE 31124 Super Robot
 0 31124 Super Robot
 0 SetNumber: 31124
+0 ReleaseYear: 2022
+0 Theme: Creator 3-in-1
 0 Name: Super Robot
 0 Author: Kristopher Wilson
 0 CustomBrick
@@ -8,6 +10,7 @@
 0 FlexibleBrickLockedControlPoint 
 0 _defaultModel: super robot
 0 _altModels: super robot, mecha dragon, jet
+0 _stepReady: true
 0 STEP
 1 16 -29.875090 0.000000 43.976720 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 1.000000 super robot
 1 16 290.000000 0.000000 -60.000000 1.000000 0.000000 0.000000 0.000000 1.000000 0.000000 0.000000 0.000000 1.000000 mecha dragon
