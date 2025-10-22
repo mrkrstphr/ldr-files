@@ -41,6 +41,11 @@ export function Model() {
     }
   };
 
+  const handleSelectSubModel = (e) => {
+    setSelectedSubModel(e.target.value);
+    setIsPlaying(false);
+  };
+
   const handlePauseClick = () => {
     setIsPlaying(false);
   };
@@ -140,7 +145,7 @@ export function Model() {
             <div className="inline-flex items-center gap-2 m-4">
               <div>{modelSelectionLabel}:</div>
               <select
-                onChange={(e) => setSelectedSubModel(e.target.value)}
+                onChange={handleSelectSubModel}
                 className="bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-stone-700 dark:border-stone-600 dark:placeholder-stone-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
                 {!defaultModel && <option value="">-- Full Model --</option>}
