@@ -100,7 +100,7 @@ const Ldr = ({ model: modelContents, onModelLoaded }) => {
             .add(controls.target0);
           controls.reset();
 
-          onModelLoaded();
+          onModelLoaded?.(model);
         },
         undefined,
         onError,
@@ -120,7 +120,7 @@ const Ldr = ({ model: modelContents, onModelLoaded }) => {
     window.addEventListener('resize', onWindowResize);
 
     return () => window.removeEventListener('resize', onWindowResize);
-  }, [containerRef, modelContents, isDarkMode]);
+  }, [containerRef, modelContents, isDarkMode, onModelLoaded]);
 
   return (
     <>

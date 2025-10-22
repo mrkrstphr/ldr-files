@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FiInfo, FiX } from 'react-icons/fi';
 import { useParams } from 'react-router-dom';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
@@ -14,8 +14,30 @@ export function Model() {
   const [loading, setLoading] = useState(true);
   const [selectedSubModel, setSelectedSubModel] = useState('');
   const [metadataOpen, setMetadataOpen] = useState(false);
+  const [numBuildingSteps, setNumBuildingSteps] = useState(0);
+  const [currentBuildingStep, setCurrentBuildingStep] = useState(0);
+  const [model, setModel] = useState(null);
 
-  const handleOnModelLoaded = () => setLoading(false);
+  const handleOnModelLoaded = useCallback((model) => {
+    setLoading(false);
+
+    setNumBuildingSteps(model.userData.numBuildingSteps || 1);
+    setCurrentBuildingStep(model.userData.numBuildingSteps || 0);
+
+    setModel(model);
+  }, []);
+
+  useEffect(() => {
+    if (model) {
+      model.traverse((c) => {
+        if (c.isLineSegments) {
+          c.visible = true;
+        } else if (c.isGroup) {
+          c.visible = c.userData.buildingStep <= currentBuildingStep;
+        }
+      });
+    }
+  }, [currentBuildingStep, model]);
 
   useEffect(() => {
     setLoading(true);
@@ -90,6 +112,19 @@ export function Model() {
         }
         onModelLoaded={handleOnModelLoaded}
       />
+      {numBuildingSteps > 1 && metadata?._stepReady === 'true' && (
+        <div className="absolute z-40 bottom-4 left-0 w-full px-8">
+          <input
+            id="minmax-range"
+            type="range"
+            min={0}
+            max={numBuildingSteps}
+            value={currentBuildingStep}
+            className="w-full h-2 bg-stone-200 flex-1 rounded-lg appearance-none cursor-pointer dark:bg-stone-700"
+            onChange={(e) => setCurrentBuildingStep(Number(e.target.value))}
+          />
+        </div>
+      )}
     </div>
   );
 }
