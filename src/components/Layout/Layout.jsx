@@ -43,8 +43,8 @@ export function Layout() {
         <div className="col-start-2 col-end-4 min-h-0 overflow-y-auto lg:rounded-tl-lg lg:rounded-bl-lg bg-white dark:bg-stone-900 dark:text-gray-100">
           <Outlet />
         </div>
-        <div className="col-start-1 col-end-4 p-4 lg:pl-64 text-center">
-          Models are &copy; The LEGO Group. This software uses the{' '}
+        <div className="col-start-1 col-end-4 p-4 lg:pl-64 text-sm text-center">
+          Models are copyright LEGO&reg;. This software uses the{' '}
           <a href="https://ldraw.org">LDraw Parts Library</a>.
         </div>
       </div>

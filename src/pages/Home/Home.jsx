@@ -76,7 +76,10 @@ export function Home() {
           <img src="http://www.ldraw.org/uploads/images/Logos-Stamps-Visual-IDs/Stamp290.png" />
         </a>
         <br />
-        <a href="http://www.ldraw.org/">
+        <a
+          href="http://www.ldraw.org/"
+          className="dark:!text-indigo-500 dark:hover:!text-indigo-600"
+        >
           This software uses the LDraw Parts Library
         </a>
       </div>
@@ -88,6 +91,9 @@ export function Home() {
           <FiGithub />
           <span>View on GitHub</span>
         </a>
+      </p>
+      <p className="mt-9 mb-3 text-center">
+        Made with ❤️ by <a href="https://github.com/mrkrstphr">Kristopher</a>.
       </p>
     </div>
   );
