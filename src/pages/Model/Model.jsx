@@ -60,6 +60,7 @@ export function Model() {
   useEffect(() => {
     setLoading(true);
     setSelectedSubModel('');
+    setIsPlaying(false);
   }, [modelSlug]);
 
   useEffect(() => {
