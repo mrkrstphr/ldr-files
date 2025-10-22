@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { FiInfo, FiX } from 'react-icons/fi';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { FiInfo, FiPause, FiPlay, FiX } from 'react-icons/fi';
 import { useParams } from 'react-router-dom';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { useModel } from '../../hooks/useModel';
@@ -17,6 +17,7 @@ export function Model() {
   const [numBuildingSteps, setNumBuildingSteps] = useState(0);
   const [currentBuildingStep, setCurrentBuildingStep] = useState(0);
   const [model, setModel] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const handleOnModelLoaded = useCallback((model) => {
     setLoading(false);
@@ -26,6 +27,17 @@ export function Model() {
 
     setModel(model);
   }, []);
+
+  const handlePlayClick = () => {
+    setIsPlaying(true);
+    if (currentBuildingStep >= numBuildingSteps) {
+      setCurrentBuildingStep(0);
+    }
+  };
+
+  const handlePauseClick = () => {
+    setIsPlaying(false);
+  };
 
   useEffect(() => {
     if (model) {
@@ -49,6 +61,37 @@ export function Model() {
   }, [defaultModel]);
 
   useEffect(() => setLoading(true), [contents, selectedSubModel]);
+
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    if (isPlaying) {
+      intervalRef.current = setInterval(() => {
+        setCurrentBuildingStep((step) => {
+          if (step >= numBuildingSteps) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+            setIsPlaying(false);
+            return step;
+          }
+
+          return Math.min(step + 1, numBuildingSteps);
+        });
+      }, 150);
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [isPlaying, numBuildingSteps]);
 
   const modelSelection =
     submodels && submodels.length > 0 ? submodels : altModels;
@@ -113,7 +156,7 @@ export function Model() {
         onModelLoaded={handleOnModelLoaded}
       />
       {numBuildingSteps > 1 && metadata?._stepReady === 'true' && (
-        <div className="absolute z-40 bottom-4 left-0 w-full px-8">
+        <div className="absolute z-40 bottom-4 left-0 w-full px-8 flex gap-2 items-center">
           <input
             id="minmax-range"
             type="range"
@@ -123,6 +166,13 @@ export function Model() {
             className="w-full h-2 bg-stone-200 flex-1 rounded-lg appearance-none cursor-pointer dark:bg-stone-700"
             onChange={(e) => setCurrentBuildingStep(Number(e.target.value))}
           />
+          <div className="border cursor-pointer border-stone-200 dark:border-stone-700 rounded p-1">
+            {isPlaying ? (
+              <FiPause onClick={handlePauseClick} />
+            ) : (
+              <FiPlay onClick={handlePlayClick} />
+            )}
+          </div>
         </div>
       )}
     </div>
