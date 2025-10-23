@@ -14,8 +14,6 @@ export function useModel(slug) {
           .flat()
           .find((m) => m.slug === slug);
 
-        console.log('🐟 model = ', `models/${model.file}`);
-
         if (!model) {
           // TODO: trigger some kind of error condition
           return;
@@ -47,6 +45,7 @@ export function useModel(slug) {
               loading: false,
               contents,
               defaultModel: metadata._defaultModel,
+              fileName: model.file,
               metadata,
               submodels,
               altModels,

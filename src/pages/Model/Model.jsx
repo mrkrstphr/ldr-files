@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FiInfo, FiPause, FiPlay, FiX } from 'react-icons/fi';
+import { FiDownload, FiInfo, FiPause, FiPlay, FiX } from 'react-icons/fi';
 import { TbRepeat, TbRepeatOff } from 'react-icons/tb';
 import { useParams } from 'react-router-dom';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
@@ -15,6 +15,7 @@ export function Model() {
   const info = useModel(modelSlug);
   const {
     contents,
+    fileName,
     metadata,
     submodels,
     altModels,
@@ -59,6 +60,27 @@ export function Model() {
 
   const handlePauseClick = () => {
     setIsPlaying(false);
+  };
+
+  const handleDownloadModel = () => {
+    const baseName = fileName.substr(0, fileName.lastIndexOf('.'));
+    const extension = fileName.substr(fileName.lastIndexOf('.'));
+    const modelFileName = selectedSubModel
+      ? `${baseName} - ${selectedSubModel}${extension}`
+      : fileName;
+
+    const element = document.createElement('a');
+    const file = new Blob(
+      [selectedSubModel ? getSubmodel(contents, selectedSubModel) : contents],
+      { type: 'text/plain' },
+    );
+
+    element.href = URL.createObjectURL(file);
+    element.download = modelFileName;
+
+    document.body.appendChild(element);
+
+    element.click();
   };
 
   useEffect(() => {
@@ -145,6 +167,13 @@ export function Model() {
               onClick={() => setMetadataOpen(!metadataOpen)}
             >
               {metadataOpen ? <FiX /> : <FiInfo />}
+            </div>
+            <div
+              className="ml-auto cursor-pointer inline-flex items-center gap-1 mr-2 text-sm"
+              onClick={handleDownloadModel}
+            >
+              <FiDownload />
+              <span className="hidden md:block">Download Model</span>
             </div>
           </div>
           <div className={`mt-2 ${metadataOpen ? 'block' : 'hidden'}`}>
