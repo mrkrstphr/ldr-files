@@ -13,8 +13,15 @@ import { PlaybackSpeed } from './PlaybackSpeed';
 export function Model() {
   const { modelSlug } = useParams();
   const info = useModel(modelSlug);
-  const { contents, metadata, submodels, altModels, defaultModel, title } =
-    info;
+  const {
+    contents,
+    metadata,
+    submodels,
+    altModels,
+    defaultModel,
+    title,
+    loading: modelLoading,
+  } = info;
 
   // TODO: FIXME: holy state, batman... maybe use useReducer?
   const [loading, setLoading] = useState(true);
@@ -182,18 +189,22 @@ export function Model() {
           </div>
         )}
       </div>
-      {loading && (
+      {(loading || modelLoading) && (
         <div className="absolute z-40 top-[50%] left-0 flex items-center justify-center w-full">
           <LoadingSpinner />
         </div>
       )}
-      <Ldr
-        key={modelSlug + selectedSubModel}
-        model={
-          selectedSubModel ? getSubmodel(contents, selectedSubModel) : contents
-        }
-        onModelLoaded={handleOnModelLoaded}
-      />
+      {!modelLoading && (
+        <Ldr
+          key={modelSlug + selectedSubModel}
+          model={
+            selectedSubModel
+              ? getSubmodel(contents, selectedSubModel)
+              : contents
+          }
+          onModelLoaded={handleOnModelLoaded}
+        />
+      )}
       {numBuildingSteps > 1 && metadata?._stepReady === 'true' && (
         <div className="absolute z-40 bottom-4 left-0 w-full px-8 flex gap-2 items-center">
           <input
