@@ -41,10 +41,10 @@ export function PlaybackSpeed({ playSpeed, setPlaySpeed }) {
       >
         <div className="py-1">
           <PlaybackOption onClick={() => setPlaySpeed(0.5)}>.5x</PlaybackOption>
+          <PlaybackOption onClick={() => setPlaySpeed(1)}>1x</PlaybackOption>
           <PlaybackOption onClick={() => setPlaySpeed(1.5)}>
             1.5x
           </PlaybackOption>
-          <PlaybackOption onClick={() => setPlaySpeed(1)}>1x</PlaybackOption>
           <PlaybackOption onClick={() => setPlaySpeed(2)}>2x</PlaybackOption>
         </div>
       </MenuItems>
