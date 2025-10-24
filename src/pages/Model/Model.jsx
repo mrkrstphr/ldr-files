@@ -99,6 +99,10 @@ export function Model() {
     setLoading(true);
     setSelectedSubModel('');
     setIsPlaying(false);
+
+    window.goatcounter?.count({
+      path: `${window.location.pathname}${window.location.search}`,
+    });
   }, [modelSlug]);
 
   useEffect(() => {

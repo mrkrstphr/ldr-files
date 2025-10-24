@@ -26,5 +26,3 @@ for (const model of models) {
     path.resolve(distDir, 'model', model.slug, 'index.html'),
   );
 }
-
-// console.log(JSON.stringify(models, null, 2));
