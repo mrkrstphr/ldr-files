@@ -96,6 +96,14 @@ export function Model() {
   }, [currentBuildingStep, model]);
 
   useEffect(() => {
+    // maybe should use helmet or something?
+    if (title) {
+      const titlePart = title?.split(' / ');
+      document.title = `${titlePart[titlePart.length - 1]} :: LDR Viewer`;
+    }
+  }, [title]);
+
+  useEffect(() => {
     setLoading(true);
     setSelectedSubModel('');
     setIsPlaying(false);

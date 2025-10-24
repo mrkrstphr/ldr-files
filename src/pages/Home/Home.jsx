@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BsDice5 } from 'react-icons/bs';
 import { FiGithub } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +8,11 @@ const buttonClasses =
 
 export function Home() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = 'LDR Files';
+  }, []);
+
   const handleRandomSetClick = (e) => {
     e.preventDefault();
 
