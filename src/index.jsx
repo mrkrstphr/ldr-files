@@ -21,7 +21,11 @@ createRoot(document.getElementById('root')).render(
 
 if (import.meta.env.PROD) {
   const script = document.createElement('script');
-  script.src = 'https://mrkrstphr.goatcounter.com/count';
+  script.src = '//gc.zgo.at/count.js';
   script.async = true;
+  script.setAttribute(
+    'data-goatcounter',
+    'https://mrkrstphr.goatcounter.com/count',
+  );
   document.head.appendChild(script);
 }
