@@ -44,8 +44,8 @@ export function PlaybackSpeed({ playSpeed, setPlaySpeed }) {
           <PlaybackOption onClick={() => setPlaySpeed(1.5)}>
             1.5x
           </PlaybackOption>
-          <PlaybackOption onClick={() => setPlaySpeed(1)}>1</PlaybackOption>
-          <PlaybackOption onClick={() => setPlaySpeed(2)}>2</PlaybackOption>
+          <PlaybackOption onClick={() => setPlaySpeed(1)}>1x</PlaybackOption>
+          <PlaybackOption onClick={() => setPlaySpeed(2)}>2x</PlaybackOption>
         </div>
       </MenuItems>
     </Menu>
