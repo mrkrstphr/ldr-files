@@ -18,3 +18,10 @@ createRoot(document.getElementById('root')).render(
     </Router>
   </StrictMode>,
 );
+
+if (import.meta.env.PROD) {
+  const script = document.createElement('script');
+  script.src = 'https://mrkrstphr.goatcounter.com/count';
+  script.async = true;
+  document.head.appendChild(script);
+}
