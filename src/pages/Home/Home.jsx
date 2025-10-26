@@ -47,26 +47,24 @@ export function Home() {
         Why not put them on the internet for others (or no one) to see and
         enjoy?
       </p>
-      <p className="mb-3">
-        <div className="mb-2">Some Notes:</div>
-        <ul className="list-disc ml-6">
-          <li className="mb-2">
-            Some pieces, especially printed pieces, are not yet available in the{' '}
-            <a href="http://www.ldraw.org">LDraw Library</a>. Most of these have
-            been replaced with generic pieces.
-          </li>
-          <li className="mb-2">
-            Some models have submodels that can be rendered independently. Look
-            for an option at the top of the model page to select these when
-            available. By default, all submodels will be shown.
-          </li>
-          <li className="mb-2">
-            Likewise, some models have multiple variations or configurations,
-            which can be selected and rendered in the same was as submodels. For
-            these, the primary variant will be shown by default.
-          </li>
-        </ul>
-      </p>
+      <p className="mb-3">Some Notes:</p>
+      <ul className="list-disc ml-6">
+        <li className="mb-2">
+          Some pieces, especially printed pieces, are not yet available in the{' '}
+          <a href="http://www.ldraw.org">LDraw Library</a>. Most of these have
+          been replaced with generic pieces.
+        </li>
+        <li className="mb-2">
+          Some models have submodels that can be rendered independently. Look
+          for an option at the top of the model page to select these when
+          available. By default, all submodels will be shown.
+        </li>
+        <li className="mb-2">
+          Likewise, some models have multiple variations or configurations,
+          which can be selected and rendered in the same was as submodels. For
+          these, the primary variant will be shown by default.
+        </li>
+      </ul>
       <p className="mb-6 mt-6 text-center">
         <button className={buttonClasses} onClick={handleRandomSetClick}>
           <BsDice5 className="group-hover:animate-spin" />
