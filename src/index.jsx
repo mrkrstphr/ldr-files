@@ -5,6 +5,7 @@ import { Layout } from './components/Layout';
 import './index.css';
 import { Home } from './pages/Home';
 import { Model } from './pages/Model';
+import { Seasonal } from './pages/Seasonal';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById('root')).render(
         <Route element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="model/:modelSlug" element={<Model />} />
+          <Route path="seasonal/:season" element={<Seasonal />} />
         </Route>
       </Routes>
     </Router>
