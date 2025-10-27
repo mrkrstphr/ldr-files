@@ -23,6 +23,10 @@ const sesonalSets = {
       name: '40013 Halloween Ghost',
     },
     {
+      link: '/models/seasonal-40012-halloween-pumpkin',
+      name: '40012 Halloween Pumpkin',
+    },
+    {
       link: '/model/other-40822-jack-o-lantern-pickup-truck',
       name: '40822 Jack-o-Lantern Pickup Truck',
     },
