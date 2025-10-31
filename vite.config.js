@@ -10,6 +10,7 @@ const dirAssets = [
     flatten: false,
   },
   'models.json',
+  'pumpkin.png',
 ];
 
 export default defineConfig({

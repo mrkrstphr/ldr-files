@@ -8,6 +8,38 @@ body {
 
 a,
 a:visited {
+  @apply underline;
+}
+
+html:not(.halloween, .christmas, .spring) a,
+html:not(.halloween, .christmas, .spring) a:visited {
+  @apply text-indigo-500 dark:text-indigo-300;
+}
+
+html.halloween a,
+html.halloween a:visited {
+  @apply text-orange-500 dark:text-orange-300;
+}
+
+html.christmas a,
+html.christmas a:visited {
+  @apply text-green-600 dark:text-green-400;
+}
+
+html:not(.halloween, .christmas, .spring) a:hover {
+  @apply text-indigo-700 dark:text-indigo-500;
+}
+
+html.halloween a:hover {
+  @apply text-orange-600 dark:text-orange-400;
+}
+
+html.christmas a:hover {
+  @apply text-green-800 dark:text-green-600;
+}
+
+/* a,
+a:visited {
   @apply text-indigo-500 dark:text-indigo-300;
   text-decoration: underline;
 }
@@ -15,7 +47,7 @@ a:visited {
 a:hover,
 a:visited:hover {
   @apply text-indigo-700 dark:text-indigo-500;
-}
+} */
 
 .lil-gui {
   @apply absolute bottom-4 right-4 z-10;
