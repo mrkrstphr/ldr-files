@@ -97,7 +97,7 @@ export function Seasonal() {
       </h2>
       <p className="mb-4">{seasonalDescriptions[season]}</p>
       <ul className="list-disc list-inside ml-2">
-        {sesonalSets[season].map((set) => (
+        {sesonalSets[season].sort().map((set) => (
           <li key={set.link} className="mb-2">
             <Link to={set.link}>{set.name}</Link>
           </li>
