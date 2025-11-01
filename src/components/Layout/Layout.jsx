@@ -1,25 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
 import { Link, Outlet } from 'react-router-dom';
-import { withBasePath } from '../../config';
+import { useHolidayTheme } from '../../hooks/useHolidayTheme';
 import { useModels } from '../../hooks/useModels';
 import { MenuToggle } from '../MenuToggle';
+import { HolidayEffects } from './HolidayEffects';
+import { HolidayLogo } from './HolidayLogo';
 import { Menu } from './Menu';
 
-const isChristmastime = () => new Date().getMonth() === 11;
-const isHalloweentime = () => new Date().getMonth() === 9;
-
 export function Layout() {
+  useHolidayTheme();
+
   const { models } = useModels();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    if (isHalloweentime()) {
-      document.documentElement.classList.add('halloween');
-    } else if (isChristmastime()) {
-      document.documentElement.classList.add('christmas');
-    }
-  }, []);
 
   return (
     <div className="relative h-dvh">
@@ -39,12 +32,7 @@ export function Layout() {
       <div className="grid grid-rows-[auto_1fr_auto] grid-cols-[auto_1fr] h-dvh min-h-0">
         <div className="h-24 flex items-center gap-2 p-4 col-start-1 col-end-4">
           <h1 className="text-4xl flex-1 flex items-center gap-1">
-            {isHalloweentime() && (
-              <img
-                src={withBasePath('images/pumpkin.png')}
-                className="size-12"
-              />
-            )}
+            <HolidayLogo />
             <Link to="/">LDR Files</Link>
           </h1>
           <MenuToggle
@@ -66,6 +54,7 @@ export function Layout() {
           <a href="https://ldraw.org">LDraw Parts Library</a>.
         </div>
       </div>
+      <HolidayEffects />
     </div>
   );
 }
