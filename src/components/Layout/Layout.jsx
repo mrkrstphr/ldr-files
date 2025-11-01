@@ -40,7 +40,10 @@ export function Layout() {
         <div className="h-24 flex items-center gap-2 p-4 col-start-1 col-end-4">
           <h1 className="text-4xl flex-1 flex items-center gap-1">
             {isHalloweentime() && (
-              <img src={withBasePath('pumpkin.png')} className="size-12" />
+              <img
+                src={withBasePath('images/pumpkin.png')}
+                className="size-12"
+              />
             )}
             <Link to="/">LDR Files</Link>
           </h1>

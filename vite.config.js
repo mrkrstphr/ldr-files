@@ -9,8 +9,12 @@ const dirAssets = [
     output: '/models',
     flatten: false,
   },
+  {
+    input: 'public/**',
+    output: '/',
+    flatten: false,
+  },
   'models.json',
-  'pumpkin.png',
 ];
 
 export default defineConfig({
