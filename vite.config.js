@@ -14,7 +14,11 @@ const dirAssets = [
     output: '/',
     flatten: false,
   },
-  'models.json',
+  {
+    input: 'data/**',
+    output: '/data',
+    flatten: false,
+  },
 ];
 
 export default defineConfig({

@@ -13,7 +13,7 @@ fs.mkdirSync(`${distDir}/model`, { recursive: true });
 const models = Object.values(
   JSON.parse(
     fs.readFileSync(
-      path.resolve(import.meta.dirname, '..', 'dist/models.json'),
+      path.resolve(import.meta.dirname, '..', 'dist/data/models.json'),
       'utf-8',
     ),
   ),
@@ -25,4 +25,21 @@ for (const model of models) {
     path.resolve(distDir, 'index.html'),
     path.resolve(distDir, 'model', model.slug, 'index.html'),
   );
+}
+
+const seasonalDir = path.resolve(distDir, 'data', 'seasonal');
+if (fs.existsSync(seasonalDir)) {
+  const seasonalSets = fs.readdirSync(seasonalDir);
+  for (const season of seasonalSets) {
+    const seasonPath = path.resolve(
+      distDir,
+      'seasonal',
+      season.substring(0, season.lastIndexOf('.')),
+    );
+    fs.mkdirSync(seasonPath, { recursive: true });
+    fs.copyFileSync(
+      path.resolve(distDir, 'index.html'),
+      path.resolve(seasonPath, 'index.html'),
+    );
+  }
 }

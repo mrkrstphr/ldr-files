@@ -16,12 +16,12 @@ const festiveClasses = `${sharedButtonClasses} !text-green-900 bg-green-100 hove
 
 export function SeasonalLink() {
   return new Date().getMonth() === 9 ? (
-    <Link to={`/seasonal/spooky`} className={spookyClasses}>
+    <Link to={`/seasonal/halloween/`} className={spookyClasses}>
       <FaGhost />
       View Spooky Sets
     </Link>
   ) : new Date().getMonth() === 11 ? (
-    <Link to={`/seasonal/festive`} className={festiveClasses}>
+    <Link to={`/seasonal/christmas/`} className={festiveClasses}>
       <TbChristmasBall />
       View Festive Sets
     </Link>

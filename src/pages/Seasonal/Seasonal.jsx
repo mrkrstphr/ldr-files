@@ -1,80 +1,41 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { withBasePath } from '../../config';
 
 function titleCase(str) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
-const sesonalSets = {
-  spooky: [
-    { link: '/model/brickheadz-40351-ghost', name: '40351 Ghost (BrickHeadz)' },
-    {
-      link: '/model/brickheadz-40422-frankenstein',
-      name: '40422 Frankenstein (BrickHeadz)',
-    },
-    { link: '/model/brickheadz-40272-witch', name: '40272 Witch (BrickHeadz)' },
-    {
-      link: '/model/other-40697-halloween-pumpkin',
-      name: '40697 Halloween Pumpkin',
-    },
-    { link: '/model/other-40721-halloween-barn', name: '40721 Halloween Barn' },
-    {
-      link: '/model/seasonal-40013-halloween-ghost',
-      name: '40013 Halloween Ghost',
-    },
-    {
-      link: '/models/seasonal-40012-halloween-pumpkin',
-      name: '40012 Halloween Pumpkin',
-    },
-    {
-      link: '/model/seasonal-40014-halloween-bat',
-      name: '40014 Halloween Bat',
-    },
-    {
-      link: '/model/other-40822-jack-o-lantern-pickup-truck',
-      name: '40822 Jack-o-Lantern Pickup Truck',
-    },
-    {
-      link: '/model/seasonal-40122-trick-or-treat',
-      name: '40122 Trick or Treat',
-    },
-    {
-      link: '/model/other-40697-halloween-pumpkin',
-      name: '40697 Halloween Pumpkin',
-    },
-    {
-      link: '/model/other-40722-luminous-ghost',
-      name: '40722 Luminous Ghost',
-    },
-  ],
-  festive: [
-    {
-      link: '/model/brickheadz-40274-mr-mrs-claus',
-      name: '40274 Mr. & Mrs. Claus (BrickHeadz)',
-    },
-    {
-      link: '/model/other-30692-christmas-chimney-fun-with-santa',
-      name: '30692 Christmas Chimney Fun with Santa',
-    },
-  ],
-};
-
-const seasonalDescriptions = {
-  spooky:
-    'Here are some of our favorite spooky sets to get you into the Halloween spirit!',
-  festive:
-    'Here are some of our favorite festive sets to get you into the holiday spirit!',
-};
-
 export function Seasonal() {
   const { season } = useParams();
+  const [description, setDescription] = useState('');
+  const [sets, setSets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    document.title = `${
-      season ? titleCase(season) : 'Seasonal'
-    } Sets - LDR Files`;
+    fetch(withBasePath(`data/seasonal/${season}.json`))
+      .then((res) => res.json())
+      .then((data) => {
+        setDescription(data.description);
+        setSets(data.sets);
+        setLoading(false);
+
+        document.title = `${
+          season ? titleCase(season) : 'Seasonal'
+        } Sets - LDR Files`;
+      })
+      .catch(() => setLoading(false));
   }, [season]);
 
-  if (!(season in sesonalSets)) {
+  if (loading) {
+    return (
+      <div className="p-4">
+        <h2 className="text-3xl mb-4">Loading...</h2>
+      </div>
+    );
+  }
+
+  if (!loading && !sets.length) {
     return (
       <div className="p-4">
         <h2 className="text-3xl mb-4">Page Not Found</h2>
@@ -95,9 +56,9 @@ export function Seasonal() {
       <h2 className="text-3xl mb-4">
         {season ? titleCase(season) : 'Seasonal'} Sets
       </h2>
-      <p className="mb-4">{seasonalDescriptions[season]}</p>
+      <p className="mb-4">{description}</p>
       <ul className="list-disc list-inside ml-2">
-        {sesonalSets[season].sort().map((set) => (
+        {sets.sort().map((set) => (
           <li key={set.link} className="mb-2">
             <Link to={set.link}>{set.name}</Link>
           </li>

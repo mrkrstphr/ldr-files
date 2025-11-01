@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
+import { withBasePath } from '../config';
 
 export function useModels() {
   const [models, setModels] = useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/ldr-files/models.json')
+    fetch(withBasePath('data/models.json'))
       .then((res) => res.json())
-      .then(models => {
+      .then((models) => {
         setModels(models);
         setLoading(false);
       });
