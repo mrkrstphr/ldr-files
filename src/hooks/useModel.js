@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { withBasePath } from '../config';
 import { getModelMetadata } from '../lib/getModelMetadata';
 
 export function useModel(slug) {
@@ -7,7 +8,7 @@ export function useModel(slug) {
   useEffect(() => {
     setData({ loading: true });
 
-    fetch('/ldr-files/models.json')
+    fetch(withBasePath('data/models.json'))
       .then((res) => res.json())
       .then((data) => {
         const model = Object.values(data)
@@ -19,10 +20,9 @@ export function useModel(slug) {
           return;
         }
 
-        fetch(`/ldr-files/models/${model.file}`)
+        fetch(withBasePath(`/models/${model.file}`))
           .then((res) => res.text())
           .then((contents) => {
-            // setContents(contents);
             const title = model.file
               .substring(0, model.file.lastIndexOf('.'))
               .replace('/', ' / ');

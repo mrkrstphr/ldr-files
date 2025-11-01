@@ -4,6 +4,7 @@ import { FaGhost } from 'react-icons/fa6';
 import { FiGithub } from 'react-icons/fi';
 import { TbChristmasBall } from 'react-icons/tb';
 import { Link, useNavigate } from 'react-router-dom';
+import { withBasePath } from '../../config';
 import { isChristmastime } from '../../lib/isChristmastime';
 import { isHalloweentime } from '../../lib/isHalloweentime';
 
@@ -40,7 +41,7 @@ export function Home() {
   const handleRandomSetClick = (e) => {
     e.preventDefault();
 
-    fetch('/ldr-files/models.json')
+    fetch(withBasePath('/data/models.json'))
       .then((res) => res.json())
       .then((models) => {
         const flattenedModels = Object.values(models).flat();
