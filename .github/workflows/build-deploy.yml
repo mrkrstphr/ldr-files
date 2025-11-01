@@ -28,6 +28,8 @@ jobs:
           npm ci
           node bin/makeModelList.js
           npm run build
+      - name: Tests
+        run: npm run test
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
