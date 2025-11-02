@@ -2,11 +2,11 @@
   "description": "Here are some of our favorite festive sets to get you into the holiday spirit!",
   "sets": [
     {
-      "link": "/model/brickheadz-40274-mr-mrs-claus",
+      "slug": "/model/brickheadz-40274-mr-mrs-claus",
       "name": "40274 Mr. & Mrs. Claus (BrickHeadz)"
     },
     {
-      "link": "/model/other-30692-christmas-chimney-fun-with-santa",
+      "slug": "/model/other-30692-christmas-chimney-fun-with-santa",
       "name": "30692 Christmas Chimney Fun with Santa"
     }
   ]

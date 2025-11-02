@@ -1,21 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { withBasePath } from '../../config';
+import { SeasonalData, SeasonalSet } from '../../types';
 
-function titleCase(str) {
+function titleCase(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
 export function Seasonal() {
   const { season } = useParams();
-  const [description, setDescription] = useState('');
-  const [sets, setSets] = useState([]);
+  const [description, setDescription] = useState<string>('');
+  const [sets, setSets] = useState<SeasonalSet[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(withBasePath(`data/seasonal/${season}.json`))
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: SeasonalData) => {
         setDescription(data.description);
         setSets(data.sets);
         setLoading(false);
@@ -59,8 +60,8 @@ export function Seasonal() {
       <p className="mb-4">{description}</p>
       <ul className="list-disc list-inside ml-2">
         {sets.sort().map((set) => (
-          <li key={set.link} className="mb-2">
-            <Link to={set.link}>{set.name}</Link>
+          <li key={set.slug} className="mb-2">
+            <Link to={set.slug}>{set.name}</Link>
           </li>
         ))}
       </ul>
