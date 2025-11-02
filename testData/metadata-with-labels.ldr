@@ -1,6 +1,5 @@
 0 Name: Sample Model
-0 Author: John Doe
-0 SetNumber: 1234-1
+0 Labels: hello, world, welcome
 0 FILE
 0 STEP
 1 16 0 0 0 1 0 0 0 1 0 0 0 1 part.dat

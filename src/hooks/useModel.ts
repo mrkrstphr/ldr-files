@@ -1,16 +1,28 @@
 import { useEffect, useState } from 'react';
 import { withBasePath } from '../config';
 import { getModelMetadata } from '../lib/getModelMetadata';
+import { Metadata, ModelCollection } from '../types';
 
-export function useModel(slug) {
-  const [data, setData] = useState({ loading: true });
+export type ModelState = {
+  contents?: string;
+  defaultModel?: string;
+  fileName?: string;
+  loading: boolean;
+  metadata?: Metadata;
+  submodels?: string[];
+  altModels?: string[];
+  title?: string;
+};
+
+export function useModel(slug: string) {
+  const [data, setData] = useState<ModelState>({ loading: true });
 
   useEffect(() => {
     setData({ loading: true });
 
     fetch(withBasePath('data/models.json'))
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: ModelCollection) => {
         const model = Object.values(data)
           .flat()
           .find((m) => m.slug === slug);
@@ -27,19 +39,6 @@ export function useModel(slug) {
               .substring(0, model.file.lastIndexOf('.'))
               .replace('/', ' / ');
             const metadata = getModelMetadata(contents);
-            const submodels = (metadata._submodels ?? '')
-              .split(',')
-              .map((s) => s.trim())
-              .filter((s) => s.length > 0);
-            const altModels = (metadata._altModels ?? '')
-              .split(',')
-              .map((s) => s.trim())
-              .filter((s) => s.length > 0);
-
-            metadata.Labels = (metadata.Labels ?? '')
-              .split(',')
-              .map((s) => s.trim())
-              .filter((s) => s.length > 0);
 
             setData({
               loading: false,
@@ -47,8 +46,8 @@ export function useModel(slug) {
               defaultModel: metadata._defaultModel,
               fileName: model.file,
               metadata,
-              submodels,
-              altModels,
+              submodels: metadata._submodels,
+              altModels: metadata._altModels,
               title,
             });
           });

@@ -18,7 +18,7 @@ test('extracts metadata', () => {
   expect(result).toEqual({
     Name: 'Sample Model',
     Author: 'John Doe',
-    Description: 'This is a sample model.',
+    SetNumber: '1234-1',
   });
 });
 
@@ -35,7 +35,26 @@ test('multiple entries for the same key', () => {
 
   expect(result).toEqual({
     Name: 'Horse',
-    Keyword: ['Brick', 'Wall', 'Roof'],
-    Something: 'Else',
+    Notes: ['Brick', 'Wall', 'Roof'],
+    Author: 'Bob',
+  });
+});
+
+test('splits string into multiple values', () => {
+  const result = getModelMetadata(loadTestFile('metadata-multiple-keys'));
+
+  expect(result).toEqual({
+    Name: 'Horse',
+    Notes: ['Brick', 'Wall', 'Roof'],
+    Author: 'Bob',
+  });
+});
+
+test('splits string into multiple values', () => {
+  const result = getModelMetadata(loadTestFile('metadata-with-labels'));
+
+  expect(result).toEqual({
+    Name: 'Sample Model',
+    Labels: ['hello', 'world', 'welcome'],
   });
 });
