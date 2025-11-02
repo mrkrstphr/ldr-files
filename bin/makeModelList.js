@@ -1,4 +1,5 @@
 import fs from 'fs/promises';
+import path from 'path';
 
 const models = {};
 
@@ -68,7 +69,10 @@ try {
         return accumulator;
       }, {});
 
-    await fs.writeFile('models.json', JSON.stringify(sorted));
+    await fs.writeFile(
+      path.resolve('data', 'models.json'),
+      JSON.stringify(sorted),
+    );
   });
 } catch (e) {
   console.error(e);
