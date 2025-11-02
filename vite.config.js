@@ -22,7 +22,15 @@ const dirAssets = [
 ];
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), DynamicPublicDirectory(dirAssets)],
+  plugins: [
+    react({
+      babel: {
+        plugins: [['babel-plugin-react-compiler']],
+      },
+    }),
+    tailwindcss(),
+    DynamicPublicDirectory(dirAssets),
+  ],
   publicDir: false,
   base: '/ldr-files/',
 });

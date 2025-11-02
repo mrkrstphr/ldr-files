@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { withBasePath } from '../config';
 import { getModelMetadata } from '../lib/getModelMetadata';
-import { Metadata, ModelCollection } from '../types';
+import type { Metadata, ModelCollection } from '../types';
 
 export type ModelState = {
   contents?: string;

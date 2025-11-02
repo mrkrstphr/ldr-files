@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { withBasePath } from '../../config';
-import { SeasonalData, SeasonalSet } from '../../types';
+import type { SeasonalData, SeasonalSet } from '../../types';
 
 function titleCase(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();

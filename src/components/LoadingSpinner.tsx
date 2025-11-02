@@ -1,5 +1,5 @@
 import { FiRefreshCw } from 'react-icons/fi';
-import { IconBaseProps } from 'react-icons/lib';
+import type { IconBaseProps } from 'react-icons/lib';
 
 export type LoadingSpinnerProps = IconBaseProps;
 

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { prettyModelName } from '../../lib/prettyModelName';
-import { Model } from '../../types';
+import type { Model } from '../../types';
 
 export type CategoryProps = {
   defaultExpanded?: boolean;

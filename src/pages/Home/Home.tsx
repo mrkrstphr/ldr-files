@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { withBasePath } from '../../config';
 import { isChristmastime } from '../../lib/isChristmastime';
 import { isHalloweentime } from '../../lib/isHalloweentime';
-import { ModelCollection } from '../../types';
+import type { ModelCollection } from '../../types';
 
 const sharedButtonClasses =
   'group !no-underline border focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 mb-2 inline-flex items-center gap-2 cursor-pointer';

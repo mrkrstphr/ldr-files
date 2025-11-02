@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { withBasePath } from '../config';
-import { ModelCollection } from '../types';
+import type { ModelCollection } from '../types';
 
 export function useModels() {
   const [models, setModels] = useState<ModelCollection>();
