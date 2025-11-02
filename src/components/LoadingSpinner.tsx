@@ -1,6 +1,9 @@
 import { FiRefreshCw } from 'react-icons/fi';
+import { IconBaseProps } from 'react-icons/lib';
 
-export function LoadingSpinner({ className, ...props }) {
+export type LoadingSpinnerProps = IconBaseProps;
+
+export function LoadingSpinner({ className, ...props }: LoadingSpinnerProps) {
   const classes = [
     className,
     'bg-gray-100 dark:bg-stone-800 text-gray-400 dark:text-stone-950 rounded-full size-16 p-4 animate-spin',

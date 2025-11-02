@@ -1,3 +1,5 @@
+export type MenuToggleProps = React.HTMLAttributes<HTMLDivElement>;
+
 const styles = [
   'text-2xl',
   'bg-stone-200/50 hover:bg-stone-200 dark:bg-stone-900/50 dark:hover:bg-stone-900',
@@ -5,7 +7,7 @@ const styles = [
   'cursor-pointer lg:hidden rounded p-2',
 ].join(' ');
 
-export function MenuToggle({ className, children, ...props }) {
+export function MenuToggle({ className, children, ...props }: MenuToggleProps) {
   const classes = [styles, className].filter(Boolean).join(' ');
 
   return (
