@@ -1,9 +1,9 @@
 import { splitPlus } from './splitPlus.js';
 
-export function getSubmodel(contents, submodelName) {
+export function getSubmodel(contents: string, submodelName: string): string {
   const lines = contents.split('\n');
   let isInSubmodel = false;
-  let submodelLines = [];
+  let submodelLines: string[] = [];
 
   const startString = '0 FILE ' + submodelName;
 
@@ -30,10 +30,10 @@ export function getSubmodel(contents, submodelName) {
   return [foundModel, submodels].join('\n');
 }
 
-function findAllSubmodels(fullContents, model) {
+function findAllSubmodels(fullContents: string, model: string): string {
   const modelLines = model.split('\n');
 
-  const submodels = [];
+  const submodels: string[] = [];
 
   for (const modelLine of modelLines) {
     const cleanLine = modelLine.trim().toLowerCase();

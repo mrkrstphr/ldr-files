@@ -1,7 +1,7 @@
 import { splitPlus } from './splitPlus.js';
 
-export function getRootSubmodels(contents) {
-  const submodels = [];
+export function getRootSubmodels(contents: string): string[] {
+  const submodels: string[] = [];
   const stepIndex = contents
     .split('\n')
     .findIndex((line) => line.trim().toLowerCase().startsWith('0 step'));

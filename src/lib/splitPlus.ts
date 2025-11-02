@@ -1,4 +1,4 @@
-export function splitPlus(str, sep, limit) {
+export function splitPlus(str: string, sep: string, limit?: number) {
   const parts = str.split(sep);
 
   if (!limit || parts.length <= limit) return parts;
