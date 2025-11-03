@@ -28,6 +28,10 @@ jobs:
           npm ci
           node bin/makeModelList.js
           npm run build
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint
       - name: Tests
         run: npm run test
       - name: Setup Pages

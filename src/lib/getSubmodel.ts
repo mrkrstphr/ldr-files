@@ -3,7 +3,7 @@ import { splitPlus } from './splitPlus.js';
 export function getSubmodel(contents: string, submodelName: string): string {
   const lines = contents.split('\n');
   let isInSubmodel = false;
-  let submodelLines: string[] = [];
+  const submodelLines: string[] = [];
 
   const startString = '0 FILE ' + submodelName;
 

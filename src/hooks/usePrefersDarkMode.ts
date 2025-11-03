@@ -1,18 +1,16 @@
 import { useEffect, useState } from 'react';
 
 export function usePrefersDarkMode() {
-  const [prefersDark, setPrefersDark] = useState<boolean>();
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  const [prefersDark, setPrefersDark] = useState<boolean>(mediaQuery.matches);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    setPrefersDark(mediaQuery.matches);
-
     const handleChange = (event: MediaQueryListEvent) =>
       setPrefersDark(event.matches);
     mediaQuery.addEventListener('change', handleChange);
 
     return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
+  }, [mediaQuery]);
 
   return prefersDark;
 }

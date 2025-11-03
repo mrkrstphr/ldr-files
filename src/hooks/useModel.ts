@@ -18,8 +18,6 @@ export function useModel(slug: string) {
   const [data, setData] = useState<ModelState>({ loading: true });
 
   useEffect(() => {
-    setData({ loading: true });
-
     fetch(withBasePath('data/models.json'))
       .then((res) => res.json())
       .then((data: ModelCollection) => {

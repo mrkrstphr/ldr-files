@@ -37,17 +37,17 @@ export function getModelMetadata(contents: string): Metadata {
     }
 
     if (splittableMultiValueKeys.includes(key)) {
-      // @ts-ignore I don't know how to make TS understand this
+      // @ts-expect-error I don't know how to make TS understand this
       metadata[key] = value.split(',').map((val) => val.trim());
     } else if (multiValueKeys.includes(key)) {
       if (!(key in metadata)) {
-        // @ts-ignore I don't know how to make TS understand this
+        // @ts-expect-error I don't know how to make TS understand this
         metadata[key] = [];
       }
-      // @ts-ignore I don't know how to make TS understand this
+      // @ts-expect-error I don't know how to make TS understand this
       metadata[key].push(value);
     } else {
-      // @ts-ignore I don't know how to make TS understand this
+      // @ts-expect-error I don't know how to make TS understand this
       metadata[key] = value;
     }
   }
