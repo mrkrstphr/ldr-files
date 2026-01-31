@@ -3,6 +3,7 @@ import { splitPlus } from './splitPlus.js';
 
 const allowedMetadataKeys = [
   'Author',
+  'File Author',
   'Labels',
   'Name',
   'Notes',
