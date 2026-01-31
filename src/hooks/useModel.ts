@@ -8,6 +8,7 @@ export type ModelState = {
   defaultModel?: string;
   fileName?: string;
   loading: boolean;
+  error?: string;
   metadata?: Metadata;
   submodels?: string[];
   altModels?: string[];
@@ -18,38 +19,71 @@ export function useModel(slug: string) {
   const [data, setData] = useState<ModelState>({ loading: true });
 
   useEffect(() => {
-    fetch(withBasePath('data/models.json'))
-      .then((res) => res.json())
-      .then((data: ModelCollection) => {
-        const model = Object.values(data)
+    let cancelled = false;
+
+    const loadModel = async () => {
+      try {
+        setData({ loading: true });
+
+        const modelsResponse = await fetch(withBasePath('data/models.json'));
+        if (!modelsResponse.ok) {
+          throw new Error(
+            `Failed to load model index: ${modelsResponse.status} ${modelsResponse.statusText}`,
+          );
+        }
+
+        const modelCollection: ModelCollection = await modelsResponse.json();
+        const model = Object.values(modelCollection)
           .flat()
           .find((m) => m.slug === slug);
 
         if (!model) {
-          // TODO: trigger some kind of error condition
-          return;
+          throw new Error(`Model not found: ${slug}`);
         }
 
-        fetch(withBasePath(`/models/${model.file}`))
-          .then((res) => res.text())
-          .then((contents) => {
-            const title = model.file
-              .substring(0, model.file.lastIndexOf('.'))
-              .replace('/', ' / ');
-            const metadata = getModelMetadata(contents);
+        const modelResponse = await fetch(withBasePath(`/models/${model.file}`));
+        if (!modelResponse.ok) {
+          throw new Error(
+            `Failed to load model file: ${modelResponse.status} ${modelResponse.statusText}`,
+          );
+        }
 
-            setData({
-              loading: false,
-              contents,
-              defaultModel: metadata._defaultModel,
-              fileName: model.file,
-              metadata,
-              submodels: metadata._submodels,
-              altModels: metadata._altModels,
-              title,
-            });
+        const contents = await modelResponse.text();
+        const title = model.file
+          .substring(0, model.file.lastIndexOf('.'))
+          .replace('/', ' / ');
+        const metadata = getModelMetadata(contents);
+
+        if (!cancelled) {
+          setData({
+            loading: false,
+            contents,
+            defaultModel: metadata._defaultModel,
+            fileName: model.file,
+            metadata,
+            submodels: metadata._submodels,
+            altModels: metadata._altModels,
+            title,
           });
-      });
+        }
+      } catch (error) {
+        if (!cancelled) {
+          const errorMessage =
+            error instanceof Error ? error.message : 'An unknown error occurred';
+          setData({
+            loading: false,
+            error: errorMessage,
+          });
+          console.error('Error loading model:', error);
+        }
+      }
+    };
+
+    loadModel();
+
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
   return data;

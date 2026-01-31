@@ -22,6 +22,7 @@ export function Model() {
     defaultModel,
     title,
     loading: modelLoading,
+    error: modelError,
   } = info;
 
   // TODO: FIXME: holy state, batman... maybe use useReducer?
@@ -230,12 +231,20 @@ export function Model() {
           </div>
         )}
       </div>
-      {(loading || modelLoading) && (
+      {(loading || modelLoading) && !modelError && (
         <div className="absolute z-40 top-[50%] left-0 flex items-center justify-center w-full">
           <LoadingSpinner />
         </div>
       )}
-      {!modelLoading && (
+      {modelError && (
+        <div className="absolute z-40 top-[50%] left-0 flex items-center justify-center w-full px-8">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg dark:bg-red-900/50 dark:border-red-700 dark:text-red-200 max-w-md">
+            <div className="font-bold mb-2">Error Loading Model</div>
+            <div>{modelError}</div>
+          </div>
+        </div>
+      )}
+      {!modelLoading && !modelError && (
         <Ldr
           key={modelSlug + selectedSubModel}
           model={

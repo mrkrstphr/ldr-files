@@ -126,7 +126,7 @@ const Ldr = ({ model: modelContents, onModelLoaded }) => {
     <>
       {errored && (
         <div className="absolute bg-stone-300/50 dark:bg-stone-950/50 p-2 z-40 bottom-0 left-0 text-center w-full">
-          Filed to load model...
+          Failed to load model...
         </div>
       )}
       <div
