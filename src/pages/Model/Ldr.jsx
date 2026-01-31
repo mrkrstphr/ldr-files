@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import * as three from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment';
-import { LDrawLoader } from 'three/addons/loaders/LDrawLoader';
 import { LDrawConditionalLineMaterial } from 'three/addons/materials/LDrawConditionalLineMaterial';
+import { withBasePath } from '../../config';
 import { usePrefersDarkMode } from '../../hooks/usePrefersDarkMode';
+import { LDrawLoader } from '../../lib/LDrawLoaderCustom';
 
 const Ldr = ({ model: modelContents, onModelLoaded }) => {
   const isDarkMode = usePrefersDarkMode();
@@ -73,6 +74,22 @@ const Ldr = ({ model: modelContents, onModelLoaded }) => {
       lDrawLoader.setPartsLibraryPath(
         'https://raw.githubusercontent.com/mrkrstphr/ldraw-parts/main/',
       );
+
+      // Load the parts map to eliminate 404s when resolving part paths
+      const partsMapResponse = await fetch(withBasePath('data/map.json'));
+      if (partsMapResponse.ok) {
+        const partsMap = await partsMapResponse.json();
+
+        // The map has paths with leading slashes like "/parts/3001.dat"
+        // but the loader expects paths without leading slashes like "parts/3001.dat"
+        const normalizedMap = {};
+        for (const [key, value] of Object.entries(partsMap)) {
+          normalizedMap[key] = value.replace(/^\//, '');
+        }
+
+        lDrawLoader.setFileMap(normalizedMap);
+      }
+
       await lDrawLoader.preloadMaterials(
         'https://raw.githubusercontent.com/mrkrstphr/ldraw-parts/main/LDCfgalt.ldr',
       );
