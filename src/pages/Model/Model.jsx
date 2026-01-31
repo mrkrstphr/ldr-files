@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { FiDownload, FiInfo, FiPause, FiPlay, FiX } from 'react-icons/fi';
 import { TbRepeat, TbRepeatOff } from 'react-icons/tb';
 import { useParams } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { getSubmodel } from '../../lib/getSubmodel';
 import { Debug } from './Debug';
 import Ldr from './Ldr';
 import { Metadata } from './Metadata';
+import { initialState, modelReducer } from './modelReducer';
 import { PlaybackSpeed } from './PlaybackSpeed';
 
 export function Model() {
@@ -25,42 +26,40 @@ export function Model() {
     error: modelError,
   } = info;
 
-  // TODO: FIXME: holy state, batman... maybe use useReducer?
-  const [loading, setLoading] = useState(true);
-  const [selectedSubModel, setSelectedSubModel] = useState('');
-  const [metadataOpen, setMetadataOpen] = useState(false);
-  const [numBuildingSteps, setNumBuildingSteps] = useState(0);
-  const [currentBuildingStep, setCurrentBuildingStep] = useState(0);
-  const [model, setModel] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [playSpeed, setPlaySpeed] = useState(1);
-  const [looping, setLooping] = useState(false);
-  const [direction, setDirection] = useState(1);
+  const [state, dispatch] = useReducer(modelReducer, initialState);
+  const {
+    loading,
+    metadataOpen,
+    selectedSubModel,
+    model,
+    numBuildingSteps,
+    currentBuildingStep,
+    isPlaying,
+    playSpeed,
+    looping,
+    direction,
+  } = state;
 
   const handleOnModelLoaded = useCallback((model) => {
-    setLoading(false);
-
-    setNumBuildingSteps(model.userData.numBuildingSteps || 1);
-    setCurrentBuildingStep(model.userData.numBuildingSteps || 1);
-
-    setModel(model);
+    dispatch({
+      type: 'MODEL_LOADED',
+      payload: {
+        model,
+        numBuildingSteps: model.userData.numBuildingSteps || 1,
+      },
+    });
   }, []);
 
   const handlePlayClick = () => {
-    setIsPlaying(true);
-    if (currentBuildingStep >= numBuildingSteps) {
-      setCurrentBuildingStep(0);
-    }
+    dispatch({ type: 'PLAY' });
   };
 
   const handleSelectSubModel = (e) => {
-    setSelectedSubModel(e.target.value);
-    setIsPlaying(false);
-    setLoading(true);
+    dispatch({ type: 'SELECT_SUBMODEL', payload: e.target.value });
   };
 
   const handlePauseClick = () => {
-    setIsPlaying(false);
+    dispatch({ type: 'PAUSE' });
   };
 
   const handleDownloadModel = () => {
@@ -105,9 +104,7 @@ export function Model() {
   }, [title]);
 
   useEffect(() => {
-    setLoading(true);
-    setSelectedSubModel('');
-    setIsPlaying(false);
+    dispatch({ type: 'RESET_FOR_NEW_MODEL' });
 
     window.goatcounter?.count({
       path: `${window.location.pathname}${window.location.search}`,
@@ -115,10 +112,14 @@ export function Model() {
   }, [modelSlug]);
 
   useEffect(() => {
-    if (defaultModel) setSelectedSubModel(defaultModel);
+    if (defaultModel) {
+      dispatch({ type: 'SET_DEFAULT_SUBMODEL', payload: defaultModel });
+    }
   }, [defaultModel]);
 
-  useEffect(() => setLoading(true), [contents]);
+  useEffect(() => {
+    dispatch({ type: 'START_LOADING' });
+  }, [contents]);
 
   const intervalRef = useRef(null);
 
@@ -130,24 +131,7 @@ export function Model() {
 
     if (isPlaying) {
       intervalRef.current = setInterval(() => {
-        setCurrentBuildingStep((step) => {
-          if (step === numBuildingSteps) {
-            if (looping) {
-              setDirection(-1);
-              return step + direction * -1;
-            }
-
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-            setIsPlaying(false);
-            return step;
-          } else if (step === 0 && direction === -1) {
-            setDirection(1);
-            return step + 1;
-          }
-
-          return Math.min(step + direction, numBuildingSteps);
-        });
+        dispatch({ type: 'TICK' });
       }, 150 / playSpeed);
     }
 
@@ -157,7 +141,7 @@ export function Model() {
         intervalRef.current = null;
       }
     };
-  }, [direction, isPlaying, looping, numBuildingSteps, playSpeed]);
+  }, [isPlaying, playSpeed]);
 
   const modelSelection =
     submodels && submodels.length > 0 ? submodels : altModels;
@@ -177,7 +161,7 @@ export function Model() {
             )}
             <div
               className="cursor-pointer"
-              onClick={() => setMetadataOpen(!metadataOpen)}
+              onClick={() => dispatch({ type: 'TOGGLE_METADATA' })}
             >
               {metadataOpen ? <FiX /> : <FiInfo />}
             </div>
@@ -264,7 +248,12 @@ export function Model() {
             max={numBuildingSteps}
             value={currentBuildingStep}
             className="w-full h-2 bg-stone-200 flex-1 rounded-lg appearance-none cursor-pointer dark:bg-stone-700"
-            onChange={(e) => setCurrentBuildingStep(Number(e.target.value))}
+            onChange={(e) =>
+              dispatch({
+                type: 'SET_BUILDING_STEP',
+                payload: Number(e.target.value),
+              })
+            }
           />
           <div className="border cursor-pointer border-stone-200 dark:border-stone-700 rounded p-1">
             {isPlaying ? (
@@ -274,13 +263,20 @@ export function Model() {
             )}
           </div>
 
-          <PlaybackSpeed playSpeed={playSpeed} setPlaySpeed={setPlaySpeed} />
+          <PlaybackSpeed
+            playSpeed={playSpeed}
+            setPlaySpeed={(speed) =>
+              dispatch({ type: 'SET_PLAY_SPEED', payload: speed })
+            }
+          />
 
           <div className="border cursor-pointer border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 rounded p-1">
             {looping ? (
-              <TbRepeat onClick={() => setLooping(false)} />
+              <TbRepeat onClick={() => dispatch({ type: 'TOGGLE_LOOPING' })} />
             ) : (
-              <TbRepeatOff onClick={() => setLooping(true)} />
+              <TbRepeatOff
+                onClick={() => dispatch({ type: 'TOGGLE_LOOPING' })}
+              />
             )}
           </div>
         </div>
