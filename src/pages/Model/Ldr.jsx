@@ -23,7 +23,7 @@ const Ldr = ({ model: modelContents, onModelLoaded }) => {
     if (!containerRef.current) return;
     const container = containerRef.current;
 
-    let camera, scene, renderer, controls;
+    let camera, scene, renderer, controls, pmremGenerator, envTexture;
     let model;
 
     function animate() {
@@ -35,14 +35,56 @@ const Ldr = ({ model: modelContents, onModelLoaded }) => {
       renderer.render(scene, camera);
     }
 
+    // Helper function to dispose of Three.js objects recursively
+    function disposeObject(obj) {
+      if (!obj) return;
+
+      // Dispose geometry
+      if (obj.geometry) {
+        obj.geometry.dispose();
+      }
+
+      // Dispose material(s)
+      if (obj.material) {
+        if (Array.isArray(obj.material)) {
+          obj.material.forEach((material) => {
+            disposeMaterial(material);
+          });
+        } else {
+          disposeMaterial(obj.material);
+        }
+      }
+
+      // Recursively dispose children
+      if (obj.children) {
+        obj.children.forEach((child) => disposeObject(child));
+      }
+    }
+
+    function disposeMaterial(material) {
+      if (!material) return;
+
+      // Dispose textures
+      if (material.map) material.map.dispose();
+      if (material.lightMap) material.lightMap.dispose();
+      if (material.bumpMap) material.bumpMap.dispose();
+      if (material.normalMap) material.normalMap.dispose();
+      if (material.specularMap) material.specularMap.dispose();
+      if (material.envMap) material.envMap.dispose();
+      if (material.alphaMap) material.alphaMap.dispose();
+      if (material.aoMap) material.aoMap.dispose();
+      if (material.displacementMap) material.displacementMap.dispose();
+      if (material.emissiveMap) material.emissiveMap.dispose();
+      if (material.gradientMap) material.gradientMap.dispose();
+      if (material.metalnessMap) material.metalnessMap.dispose();
+      if (material.roughnessMap) material.roughnessMap.dispose();
+
+      material.dispose();
+    }
+
     if (!modelContents) return;
 
     (async () => {
-      // if container has a child element of canvas, destroy it
-      if (container.firstChild) {
-        container.removeChild(container.firstChild);
-      }
-
       camera = new three.PerspectiveCamera(
         75,
         container.offsetWidth / container.offsetHeight,
@@ -58,13 +100,12 @@ const Ldr = ({ model: modelContents, onModelLoaded }) => {
       renderer.toneMapping = three.ACESFilmicToneMapping;
       container.appendChild(renderer.domElement);
 
-      const pmremGenerator = new three.PMREMGenerator(renderer);
+      pmremGenerator = new three.PMREMGenerator(renderer);
 
       scene = new three.Scene();
       scene.background = new three.Color(isDarkMode ? 0x1c1917 : 0xffffff);
-      scene.environment = pmremGenerator.fromScene(
-        new RoomEnvironment(),
-      ).texture;
+      envTexture = pmremGenerator.fromScene(new RoomEnvironment()).texture;
+      scene.environment = envTexture;
 
       controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
@@ -100,6 +141,7 @@ const Ldr = ({ model: modelContents, onModelLoaded }) => {
         function (group2) {
           if (model) {
             scene.remove(model);
+            disposeObject(model);
           }
           model = group2;
           model.rotation.x = Math.PI;
@@ -136,7 +178,47 @@ const Ldr = ({ model: modelContents, onModelLoaded }) => {
 
     window.addEventListener('resize', onWindowResize);
 
-    return () => window.removeEventListener('resize', onWindowResize);
+    return () => {
+      // Cleanup function to prevent memory leaks
+      window.removeEventListener('resize', onWindowResize);
+
+      // Stop animation loop
+      if (renderer) {
+        renderer.setAnimationLoop(null);
+      }
+
+      // Dispose of controls
+      if (controls) {
+        controls.dispose();
+      }
+
+      // Dispose of the scene and all its objects
+      if (scene) {
+        scene.traverse((object) => {
+          disposeObject(object);
+        });
+        scene.clear();
+      }
+
+      // Dispose of environment texture
+      if (envTexture) {
+        envTexture.dispose();
+      }
+
+      // Dispose of PMREMGenerator
+      if (pmremGenerator) {
+        pmremGenerator.dispose();
+      }
+
+      // Dispose of renderer
+      if (renderer) {
+        renderer.dispose();
+        renderer.forceContextLoss();
+        if (renderer.domElement && renderer.domElement.parentNode) {
+          renderer.domElement.parentNode.removeChild(renderer.domElement);
+        }
+      }
+    };
   }, [containerRef, modelContents, isDarkMode, onModelLoaded]);
 
   return (
