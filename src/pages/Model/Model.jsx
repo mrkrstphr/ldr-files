@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
-import { FiDownload, FiInfo, FiPause, FiPlay, FiX } from 'react-icons/fi';
+import {
+  FiCamera,
+  FiDownload,
+  FiInfo,
+  FiPause,
+  FiPlay,
+  FiX,
+} from 'react-icons/fi';
 import { TbRepeat, TbRepeatOff } from 'react-icons/tb';
 import { useParams } from 'react-router-dom';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
@@ -39,6 +46,11 @@ export function Model() {
     looping,
     direction,
   } = state;
+
+  const canvasRef = useRef(null);
+  const sceneRef = useRef(null);
+  const rendererRef = useRef(null);
+  const cameraRef = useRef(null);
 
   const handleOnModelLoaded = useCallback((model) => {
     dispatch({
@@ -81,6 +93,58 @@ export function Model() {
     document.body.appendChild(element);
 
     element.click();
+  };
+
+  const handleTakeScreenshot = () => {
+    if (
+      !canvasRef.current ||
+      !sceneRef.current ||
+      !rendererRef.current ||
+      !cameraRef.current
+    ) {
+      console.error('Screenshot resources not available');
+      return;
+    }
+
+    const canvas = canvasRef.current;
+    const scene = sceneRef.current;
+    const renderer = rendererRef.current;
+    const camera = cameraRef.current;
+    const baseName = fileName?.substr(0, fileName.lastIndexOf('.')) || 'model';
+    const screenshotName = selectedSubModel
+      ? `${baseName} - ${selectedSubModel}.png`
+      : `${baseName}.png`;
+
+    try {
+      const originalBackground = scene.background;
+      scene.background = null;
+
+      renderer.render(scene, camera);
+
+      canvas.toBlob(
+        (blob) => {
+          scene.background = originalBackground;
+
+          if (!blob) {
+            console.error('Failed to create blob from canvas');
+            return;
+          }
+
+          const url = URL.createObjectURL(blob);
+          const element = document.createElement('a');
+          element.href = url;
+          element.download = screenshotName;
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+          URL.revokeObjectURL(url);
+        },
+        'image/png',
+        1.0,
+      );
+    } catch (error) {
+      console.error('Screenshot failed:', error);
+    }
   };
 
   useEffect(() => {
@@ -165,12 +229,21 @@ export function Model() {
             >
               {metadataOpen ? <FiX /> : <FiInfo />}
             </div>
-            <div
-              className="ml-auto cursor-pointer inline-flex items-center gap-1 mr-2 text-sm"
-              onClick={handleDownloadModel}
-            >
-              <FiDownload />
-              <span className="hidden md:block">Download Model</span>
+            <div className="ml-auto inline-flex items-center gap-4 mr-2 text-sm">
+              <div
+                className="cursor-pointer inline-flex items-center gap-1"
+                onClick={handleTakeScreenshot}
+              >
+                <FiCamera />
+                <span className="hidden md:inline">Screenshot</span>
+              </div>
+              <div
+                className="cursor-pointer inline-flex items-center gap-1"
+                onClick={handleDownloadModel}
+              >
+                <FiDownload />
+                <span className="hidden md:inline">Download Model</span>
+              </div>
             </div>
           </div>
           <div className={`mt-2 ${metadataOpen ? 'block' : 'hidden'}`}>
@@ -237,6 +310,10 @@ export function Model() {
               : contents
           }
           onModelLoaded={handleOnModelLoaded}
+          canvasRef={canvasRef}
+          sceneRef={sceneRef}
+          rendererRef={rendererRef}
+          cameraRef={cameraRef}
         />
       )}
       {numBuildingSteps > 1 && metadata?._stepReady === 'true' && (

@@ -7,7 +7,14 @@ import { withBasePath } from '../../config';
 import { usePrefersDarkMode } from '../../hooks/usePrefersDarkMode';
 import { LDrawLoader } from '../../lib/LDrawLoaderCustom';
 
-const Ldr = ({ model: modelContents, onModelLoaded }) => {
+const Ldr = ({
+  model: modelContents,
+  onModelLoaded,
+  canvasRef,
+  sceneRef,
+  rendererRef,
+  cameraRef,
+}) => {
   const isDarkMode = usePrefersDarkMode();
   const containerRef = useRef(null);
   const [errored, setErrored] = useState(false);
@@ -92,7 +99,11 @@ const Ldr = ({ model: modelContents, onModelLoaded }) => {
         10000,
       );
 
-      renderer = new three.WebGLRenderer({ antialias: true });
+      renderer = new three.WebGLRenderer({
+        antialias: true,
+        preserveDrawingBuffer: true,
+        alpha: true,
+      });
       renderer.setPixelRatio(window.devicePixelRatio);
 
       renderer.setSize(container.offsetWidth, container.offsetHeight);
@@ -104,6 +115,20 @@ const Ldr = ({ model: modelContents, onModelLoaded }) => {
 
       scene = new three.Scene();
       scene.background = new three.Color(isDarkMode ? 0x1c1917 : 0xffffff);
+
+      if (canvasRef) {
+        canvasRef.current = renderer.domElement;
+      }
+      if (sceneRef) {
+        sceneRef.current = scene;
+      }
+      if (rendererRef) {
+        rendererRef.current = renderer;
+      }
+      if (cameraRef) {
+        cameraRef.current = camera;
+      }
+
       envTexture = pmremGenerator.fromScene(new RoomEnvironment()).texture;
       scene.environment = envTexture;
 
