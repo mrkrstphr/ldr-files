@@ -246,27 +246,30 @@ export function Model() {
     <div className="h-full relative" ref={containerRef}>
       <div className="absolute z-40 w-full">
         <div className="bg-stone-300/50 dark:bg-stone-950/50 p-2 lg:rounded-tl-lg">
-          <div className="flex items-center gap-2">
-            <div>{title}</div>
-            {(metadata?.Labels ?? []).includes('incomplete') && (
-              <div className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300">
-                Incomplete
+          <div className="flex flex-col md:flex-row md:items-center gap-2">
+            <div className="flex items-center gap-2 flex-1">
+              <div>{title}</div>
+              {(metadata?.Labels ?? []).includes('incomplete') && (
+                <div className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300">
+                  Incomplete
+                </div>
+              )}
+              <div
+                className="cursor-pointer"
+                onClick={() => dispatch({ type: 'TOGGLE_METADATA' })}
+              >
+                {metadataOpen ? <FiX /> : <FiInfo />}
               </div>
-            )}
-            <div
-              className="cursor-pointer"
-              onClick={() => dispatch({ type: 'TOGGLE_METADATA' })}
-            >
-              {metadataOpen ? <FiX /> : <FiInfo />}
             </div>
-            <div className="ml-auto inline-flex items-center gap-4 mr-2 text-sm">
+
+            <div className="inline-flex items-center gap-4 text-sm self-end md:self-auto">
               <div
                 className="cursor-pointer inline-flex items-center gap-1"
                 onClick={handleToggleFullscreen}
                 title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
               >
                 {isFullscreen ? <FiMinimize /> : <FiMaximize />}
-                <span className="hidden md:inline">
+                <span className="hidden lg:inline">
                   {isFullscreen ? 'Exit' : 'Fullscreen'}
                 </span>
               </div>
@@ -276,7 +279,7 @@ export function Model() {
                 title="Take Screenshot"
               >
                 <FiCamera />
-                <span className="hidden md:inline">Screenshot</span>
+                <span className="hidden lg:inline">Screenshot</span>
               </div>
               <div
                 className="cursor-pointer inline-flex items-center gap-1"
@@ -284,7 +287,7 @@ export function Model() {
                 title="Download LDR File"
               >
                 <FiDownload />
-                <span className="hidden md:inline">Download</span>
+                <span className="hidden lg:inline">Download</span>
               </div>
             </div>
           </div>
