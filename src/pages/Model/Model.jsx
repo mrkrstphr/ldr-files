@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useReducer, useRef } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import {
   FiCamera,
   FiDownload,
   FiInfo,
+  FiMaximize,
+  FiMinimize,
   FiPause,
   FiPlay,
   FiX,
@@ -51,6 +53,9 @@ export function Model() {
   const sceneRef = useRef(null);
   const rendererRef = useRef(null);
   const cameraRef = useRef(null);
+  const containerRef = useRef(null);
+
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const handleOnModelLoaded = useCallback((model) => {
     dispatch({
@@ -147,6 +152,31 @@ export function Model() {
     }
   };
 
+  const handleToggleFullscreen = async () => {
+    if (!containerRef.current) return;
+
+    try {
+      if (!document.fullscreenElement) {
+        await containerRef.current.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (error) {
+      console.error('Fullscreen failed:', error);
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
   useEffect(() => {
     if (model) {
       model.traverse((c) => {
@@ -213,7 +243,7 @@ export function Model() {
     submodels && submodels.length > 0 ? 'Submodels' : 'Alternative Models';
 
   return (
-    <div className="h-full relative">
+    <div className="h-full relative" ref={containerRef}>
       <div className="absolute z-40 w-full">
         <div className="bg-stone-300/50 dark:bg-stone-950/50 p-2 lg:rounded-tl-lg">
           <div className="flex items-center gap-2">
@@ -232,7 +262,18 @@ export function Model() {
             <div className="ml-auto inline-flex items-center gap-4 mr-2 text-sm">
               <div
                 className="cursor-pointer inline-flex items-center gap-1"
+                onClick={handleToggleFullscreen}
+                title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+              >
+                {isFullscreen ? <FiMinimize /> : <FiMaximize />}
+                <span className="hidden md:inline">
+                  {isFullscreen ? 'Exit' : 'Fullscreen'}
+                </span>
+              </div>
+              <div
+                className="cursor-pointer inline-flex items-center gap-1"
                 onClick={handleTakeScreenshot}
+                title="Take Screenshot"
               >
                 <FiCamera />
                 <span className="hidden md:inline">Screenshot</span>
@@ -240,9 +281,10 @@ export function Model() {
               <div
                 className="cursor-pointer inline-flex items-center gap-1"
                 onClick={handleDownloadModel}
+                title="Download LDR File"
               >
                 <FiDownload />
-                <span className="hidden md:inline">Download Model</span>
+                <span className="hidden md:inline">Download</span>
               </div>
             </div>
           </div>
