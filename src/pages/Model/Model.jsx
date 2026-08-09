@@ -3,6 +3,7 @@ import {
   FiCamera,
   FiDownload,
   FiInfo,
+  FiList,
   FiMaximize,
   FiMinimize,
   FiPause,
@@ -14,10 +15,12 @@ import { useParams } from 'react-router-dom';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { useModel } from '../../hooks/useModel';
 import { getSubmodel } from '../../lib/getSubmodel';
+import { parsePartsList } from '../../lib/parsePartsList';
 import { Debug } from './Debug';
 import Ldr from './Ldr';
 import { Metadata } from './Metadata';
 import { initialState, modelReducer } from './modelReducer';
+import { PartsList } from './PartsList';
 import { PlaybackSpeed } from './PlaybackSpeed';
 
 export function Model() {
@@ -56,6 +59,8 @@ export function Model() {
   const containerRef = useRef(null);
 
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showPartsList, setShowPartsList] = useState(false);
+  const [partsListData, setPartsListData] = useState(null);
 
   const handleOnModelLoaded = useCallback((model) => {
     dispatch({
@@ -213,7 +218,14 @@ export function Model() {
 
   useEffect(() => {
     dispatch({ type: 'START_LOADING' });
-  }, [contents]);
+
+    if (contents) {
+      const modelContent = selectedSubModel
+        ? getSubmodel(contents, selectedSubModel)
+        : contents;
+      setPartsListData(parsePartsList(modelContent));
+    }
+  }, [contents, selectedSubModel]);
 
   const intervalRef = useRef(null);
 
@@ -263,6 +275,14 @@ export function Model() {
             </div>
 
             <div className="inline-flex items-center gap-4 text-sm self-end md:self-auto">
+              <div
+                className="cursor-pointer inline-flex items-center gap-1"
+                onClick={() => setShowPartsList(true)}
+                title="Parts List"
+              >
+                <FiList />
+                <span className="hidden lg:inline">Parts List</span>
+              </div>
               <div
                 className="cursor-pointer inline-flex items-center gap-1"
                 onClick={handleToggleFullscreen}
@@ -402,6 +422,12 @@ export function Model() {
             )}
           </div>
         </div>
+      )}
+      {showPartsList && (
+        <PartsList
+          partsData={partsListData}
+          onClose={() => setShowPartsList(false)}
+        />
       )}
     </div>
   );
