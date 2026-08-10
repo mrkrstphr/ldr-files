@@ -1044,6 +1044,12 @@ class LDrawPartsGeometryCache {
               parseCache.getData(subobject.fileName),
               subobject,
             );
+          })
+          .catch((error) => {
+            // the part/subobject couldn't be found or failed to parse - skip it
+            // instead of letting the failure bubble up and abort the whole model.
+            console.warn(error);
+            return null;
           });
 
         promises.push(promise);
