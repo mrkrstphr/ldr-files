@@ -9,21 +9,35 @@ import path from 'path';
 const distDir = path.resolve(import.meta.dirname, '..', 'dist');
 
 fs.mkdirSync(`${distDir}/model`, { recursive: true });
+fs.mkdirSync(`${distDir}/category`, { recursive: true });
 
-const models = Object.values(
-  JSON.parse(
-    fs.readFileSync(
-      path.resolve(import.meta.dirname, '..', 'dist/data/models.json'),
-      'utf-8',
-    ),
+const modelsBySlug = JSON.parse(
+  fs.readFileSync(
+    path.resolve(import.meta.dirname, '..', 'dist/data/models.json'),
+    'utf-8',
   ),
-).flat();
+);
+
+const models = Object.values(modelsBySlug).flat();
 
 for (const model of models) {
   fs.mkdirSync(path.resolve(distDir, 'model', model.slug), { recursive: true });
   fs.copyFileSync(
     path.resolve(distDir, 'index.html'),
     path.resolve(distDir, 'model', model.slug, 'index.html'),
+  );
+}
+
+for (const categoryName of Object.keys(modelsBySlug)) {
+  const categoryDir = path.resolve(
+    distDir,
+    'category',
+    encodeURIComponent(categoryName),
+  );
+  fs.mkdirSync(categoryDir, { recursive: true });
+  fs.copyFileSync(
+    path.resolve(distDir, 'index.html'),
+    path.resolve(categoryDir, 'index.html'),
   );
 }
 

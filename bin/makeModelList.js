@@ -2,6 +2,19 @@ import fs from 'fs/promises';
 import path from 'path';
 
 const models = {};
+const modelsJsonPath = path.resolve('data', 'models.json');
+
+const existingDates = {};
+try {
+  const existing = JSON.parse(await fs.readFile(modelsJsonPath, 'utf-8'));
+  for (const entries of Object.values(existing)) {
+    for (const entry of entries) {
+      if (entry.dateAdded) existingDates[entry.file] = entry.dateAdded;
+    }
+  }
+} catch {
+  // No existing models.json yet.
+}
 
 function slugify(text) {
   return text
@@ -11,12 +24,12 @@ function slugify(text) {
     .replace(/^-+|-+$/g, '');
 }
 
-function readdir(path) {
-  return fs.readdir(path).then((v) => {
+function readdir(dirPath) {
+  return fs.readdir(dirPath).then((v) => {
     return Promise.all(
       v.map(async (file) => {
         return new Promise(async (resolve) => {
-          const filePath = `${path}/${file}`;
+          const filePath = `${dirPath}/${file}`;
           const stats = await fs.stat(filePath);
 
           if (file.substring(0, 2) === '._') {
@@ -35,8 +48,20 @@ function readdir(path) {
               }
 
               const modelFile = filePath.replace('models/', '');
+              const dateAdded =
+                existingDates[modelFile] ?? new Date().toISOString();
+              const previewFile = modelFile.replace(/\.ldr$/i, '.png');
+              const hasPreview = await fs
+                .access(path.join('previews', previewFile))
+                .then(() => true)
+                .catch(() => false);
 
-              models[theme].push({ file: modelFile, slug: slugify(modelFile) });
+              models[theme].push({
+                file: modelFile,
+                slug: slugify(modelFile),
+                dateAdded,
+                hasPreview,
+              });
             }
           }
 
