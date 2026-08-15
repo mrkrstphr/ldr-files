@@ -1,6 +1,8 @@
 export type Model = {
   file: string;
   slug: string;
+  dateAdded: string;
+  hasPreview: boolean;
 };
 
 export type ModelCollection = {

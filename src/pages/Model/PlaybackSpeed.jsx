@@ -29,7 +29,7 @@ export function PlaybackSpeed({ playSpeed, setPlaySpeed }) {
   return (
     <Menu>
       <MenuButton>
-        <div className="border cursor-pointer border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 rounded p-1">
+        <div className="icon-btn">
           <SpeedIcon />
         </div>
       </MenuButton>

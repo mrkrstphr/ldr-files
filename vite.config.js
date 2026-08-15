@@ -19,6 +19,11 @@ const dirAssets = [
     output: '/data',
     flatten: false,
   },
+  {
+    input: 'previews/**',
+    output: '/previews',
+    flatten: false,
+  },
 ];
 
 export default defineConfig({

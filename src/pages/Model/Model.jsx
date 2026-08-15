@@ -7,13 +7,14 @@ import {
   FiMinimize,
   FiPause,
   FiPlay,
-  FiX,
 } from 'react-icons/fi';
 import { TbRepeat, TbRepeatOff } from 'react-icons/tb';
 import { useParams } from 'react-router-dom';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { useModel } from '../../hooks/useModel';
 import { getSubmodel } from '../../lib/getSubmodel';
+import { prettyModelName } from '../../lib/prettyModelName';
+import { splitPlus } from '../../lib/splitPlus';
 import { Debug } from './Debug';
 import Ldr from './Ldr';
 import { Metadata } from './Metadata';
@@ -240,81 +241,105 @@ export function Model() {
   const modelSelection =
     submodels && submodels.length > 0 ? submodels : altModels;
   const modelSelectionLabel =
-    submodels && submodels.length > 0 ? 'Submodels' : 'Alternative Models';
+    submodels && submodels.length > 0 ? 'Submodels' : 'Alt. Build';
+
+  const [fallbackNum, ...fallbackRest] = fileName
+    ? splitPlus(prettyModelName(fileName), ' ', 2)
+    : [];
+  const setNumber = metadata?.SetNumber || fallbackNum;
+  const setName = metadata?.Name || fallbackRest.join(' ') || title;
+  const isIncomplete = (metadata?.Labels ?? []).includes('incomplete');
+  const buildProgress =
+    numBuildingSteps > 0 ? (currentBuildingStep / numBuildingSteps) * 100 : 0;
 
   return (
-    <div className="h-full relative" ref={containerRef}>
-      <div className="absolute z-40 w-full">
-        <div className="bg-stone-300/50 dark:bg-stone-950/50 p-2 lg:rounded-tl-lg">
-          <div className="flex flex-col md:flex-row md:items-center gap-2">
-            <div className="flex items-center gap-2 flex-1">
-              <div>{title}</div>
-              {(metadata?.Labels ?? []).includes('incomplete') && (
-                <div className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300">
-                  Incomplete
-                </div>
-              )}
-              <div
-                className="cursor-pointer"
-                onClick={() => dispatch({ type: 'TOGGLE_METADATA' })}
+    <div
+      className="h-full relative"
+      ref={containerRef}
+      style={{
+        background:
+          'radial-gradient(circle at 25% 15%, color-mix(in srgb, var(--accent-purple) 16%, transparent), transparent 55%), radial-gradient(circle at 80% 85%, color-mix(in srgb, var(--accent-blue) 14%, transparent), transparent 55%), var(--surface-2)',
+      }}
+    >
+      <div className="absolute z-40 top-4 left-4 right-4 flex flex-col gap-2.5">
+        <div className="glass-panel flex flex-wrap items-center gap-3 px-3.5 py-2.5">
+          <div className="flex min-w-0 flex-1 items-center gap-2.5">
+            {setNumber && (
+              <span
+                className="code flex-shrink-0 rounded-md border px-1.5 py-0.5 text-[11px]"
+                style={{
+                  color: 'var(--text-faint)',
+                  borderColor: 'var(--border)',
+                  background: 'var(--surface-2)',
+                }}
               >
-                {metadataOpen ? <FiX /> : <FiInfo />}
-              </div>
-            </div>
-
-            <div className="inline-flex items-center gap-4 text-sm self-end md:self-auto">
-              <div
-                className="cursor-pointer inline-flex items-center gap-1"
-                onClick={handleToggleFullscreen}
-                title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-              >
-                {isFullscreen ? <FiMinimize /> : <FiMaximize />}
-                <span className="hidden lg:inline">
-                  {isFullscreen ? 'Exit' : 'Fullscreen'}
-                </span>
-              </div>
-              <div
-                className="cursor-pointer inline-flex items-center gap-1"
-                onClick={handleTakeScreenshot}
-                title="Take Screenshot"
-              >
-                <FiCamera />
-                <span className="hidden lg:inline">Screenshot</span>
-              </div>
-              <div
-                className="cursor-pointer inline-flex items-center gap-1"
-                onClick={handleDownloadModel}
-                title="Download LDR File"
-              >
-                <FiDownload />
-                <span className="hidden lg:inline">Download</span>
-              </div>
-            </div>
+                #{setNumber}
+              </span>
+            )}
+            <span className="display truncate text-[15px] font-bold">
+              {setName}
+            </span>
+            {isIncomplete && (
+              <span className="pill-badge warn flex-shrink-0">
+                Incomplete
+              </span>
+            )}
           </div>
-          <div className={`mt-2 ${metadataOpen ? 'block' : 'hidden'}`}>
-            {metadata && <Metadata metadata={metadata} />}
+
+          {(modelSelection ?? []).length > 0 && (
+            <select
+              onChange={handleSelectSubModel}
+              className="stage-select"
+              title={modelSelectionLabel}
+            >
+              {!defaultModel && <option value="">-- Full Model --</option>}
+              {modelSelection.map((subModel) => (
+                <option
+                  key={subModel}
+                  value={subModel}
+                  selected={subModel === selectedSubModel}
+                >
+                  {subModel}
+                </option>
+              ))}
+            </select>
+          )}
+
+          <div className="flex items-center gap-1">
+            <button
+              className={`icon-btn ${metadataOpen ? 'on' : ''}`}
+              onClick={() => dispatch({ type: 'TOGGLE_METADATA' })}
+              title="Details"
+            >
+              <FiInfo />
+            </button>
+            <button
+              className="icon-btn"
+              onClick={handleToggleFullscreen}
+              title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+            >
+              {isFullscreen ? <FiMinimize /> : <FiMaximize />}
+            </button>
+            <button
+              className="icon-btn"
+              onClick={handleTakeScreenshot}
+              title="Take Screenshot"
+            >
+              <FiCamera />
+            </button>
+            <button
+              className="icon-btn"
+              onClick={handleDownloadModel}
+              title="Download LDR File"
+            >
+              <FiDownload />
+            </button>
           </div>
         </div>
-        {(modelSelection ?? []).length > 0 && (
-          <div className="flex justify-end w-full">
-            <div className="inline-flex items-center gap-2 m-4">
-              <div>{modelSelectionLabel}:</div>
-              <select
-                onChange={handleSelectSubModel}
-                className="bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-stone-700 dark:border-stone-600 dark:placeholder-stone-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              >
-                {!defaultModel && <option value="">-- Full Model --</option>}
-                {modelSelection.map((subModel) => (
-                  <option
-                    key={subModel}
-                    value={subModel}
-                    selected={subModel === selectedSubModel}
-                  >
-                    {subModel}
-                  </option>
-                ))}
-              </select>
-            </div>
+
+        {metadataOpen && metadata && (
+          <div className="glass-panel p-3.5">
+            <Metadata metadata={metadata} />
           </div>
         )}
 
@@ -362,14 +387,25 @@ export function Model() {
         />
       )}
       {numBuildingSteps > 1 && metadata?._stepReady === 'true' && (
-        <div className="absolute z-40 bottom-4 left-0 w-full px-8 flex gap-2 items-center">
+        <div className="glass-panel absolute z-40 bottom-4 left-4 right-4 flex items-center gap-2.5 px-3.5 py-2.5">
+          <button className="icon-btn flex-shrink-0" title={isPlaying ? 'Pause' : 'Play'}>
+            {isPlaying ? (
+              <FiPause onClick={handlePauseClick} />
+            ) : (
+              <FiPlay onClick={handlePlayClick} />
+            )}
+          </button>
+
           <input
             id="minmax-range"
             type="range"
             min={0}
             max={numBuildingSteps}
             value={currentBuildingStep}
-            className="w-full h-2 bg-stone-200 flex-1 rounded-lg appearance-none cursor-pointer dark:bg-stone-700"
+            className="stage-range flex-1"
+            style={{
+              background: `linear-gradient(to right, var(--accent-red) ${buildProgress}%, var(--border) ${buildProgress}%)`,
+            }}
             onChange={(e) =>
               dispatch({
                 type: 'SET_BUILDING_STEP',
@@ -377,12 +413,12 @@ export function Model() {
               })
             }
           />
-          <div className="border cursor-pointer border-stone-200 dark:border-stone-700 rounded p-1">
-            {isPlaying ? (
-              <FiPause onClick={handlePauseClick} />
-            ) : (
-              <FiPlay onClick={handlePlayClick} />
-            )}
+
+          <div
+            className="code flex-shrink-0 text-[11.5px]"
+            style={{ color: 'var(--text-faint)' }}
+          >
+            {currentBuildingStep} / {numBuildingSteps}
           </div>
 
           <PlaybackSpeed
@@ -392,7 +428,10 @@ export function Model() {
             }
           />
 
-          <div className="border cursor-pointer border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 rounded p-1">
+          <button
+            className={`icon-btn flex-shrink-0 ${looping ? 'on' : ''}`}
+            title={looping ? 'Looping On' : 'Looping Off'}
+          >
             {looping ? (
               <TbRepeat onClick={() => dispatch({ type: 'TOGGLE_LOOPING' })} />
             ) : (
@@ -400,7 +439,7 @@ export function Model() {
                 onClick={() => dispatch({ type: 'TOGGLE_LOOPING' })}
               />
             )}
-          </div>
+          </button>
         </div>
       )}
     </div>

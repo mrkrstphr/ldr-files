@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import './index.css';
+import { Category } from './pages/Category';
 import { Home } from './pages/Home';
 import { Model } from './pages/Model';
 import { Seasonal } from './pages/Seasonal';
@@ -13,6 +14,7 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path="category/:categoryName" element={<Category />} />
           <Route path="model/:modelSlug" element={<Model />} />
           <Route path="seasonal/:season" element={<Seasonal />} />
         </Route>
