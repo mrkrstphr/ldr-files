@@ -11,6 +11,7 @@ const allowedMetadataKeys = [
   'SetNumber',
   'Theme',
   '_altModels',
+  '_defaultModel',
   '_stepReady',
   '_submodels',
 ];
