@@ -1,6 +1,18 @@
 import { splitPlus } from './splitPlus.js';
 
 export function getSubmodel(contents: string, submodelName: string): string {
+  return getSubmodelInternal(contents, submodelName, new Set());
+}
+
+function getSubmodelInternal(
+  contents: string,
+  submodelName: string,
+  seen: Set<string>,
+): string {
+  const normalizedName = submodelName.toLowerCase().trim();
+  if (seen.has(normalizedName)) return '';
+  seen.add(normalizedName);
+
   const lines = contents.split('\n');
   let isInSubmodel = false;
   const submodelLines: string[] = [];
@@ -25,12 +37,16 @@ export function getSubmodel(contents: string, submodelName: string): string {
   }
 
   const foundModel = submodelLines.join('\n');
-  const submodels = findAllSubmodels(contents, foundModel);
+  const submodels = findAllSubmodels(contents, foundModel, seen);
 
   return [foundModel, submodels].join('\n');
 }
 
-function findAllSubmodels(fullContents: string, model: string): string {
+function findAllSubmodels(
+  fullContents: string,
+  model: string,
+  seen: Set<string>,
+): string {
   const modelLines = model.split('\n');
 
   const submodels: string[] = [];
@@ -44,8 +60,12 @@ function findAllSubmodels(fullContents: string, model: string): string {
     const submodelName = parts[14];
 
     if (!submodelName.endsWith('.dat')) {
-      const submodelContents = getSubmodel(fullContents, submodelName);
-      submodels.push(submodelContents);
+      const submodelContents = getSubmodelInternal(
+        fullContents,
+        submodelName,
+        seen,
+      );
+      if (submodelContents) submodels.push(submodelContents);
     }
   }
 
