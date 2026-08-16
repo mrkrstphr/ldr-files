@@ -475,7 +475,6 @@ class LDrawParsedCache {
     if (loader.fileMap && loader.fileMap[lookupKey]) {
       subobjectURL = loader.fileMap[lookupKey];
       foundInMap = true;
-      // console.log('Using fileMap for', lookupKey, '->', subobjectURL);
     } else if (fileName.includes('/')) {
       // File has a directory prefix like "8/4-4cyli.dat" or "s/3001s01.dat"
       // Try stripping the prefix and looking up just the filename
@@ -485,7 +484,6 @@ class LDrawParsedCache {
       if (loader.fileMap && loader.fileMap[baseFile]) {
         subobjectURL = loader.fileMap[baseFile];
         foundInMap = true;
-        // console.log('Using fileMap for', baseFile, '(from', fileName, ') ->', subobjectURL);
       } else {
         // File already has a path but not in map, use as-is
         subobjectURL = fileName;
@@ -512,22 +510,13 @@ class LDrawParsedCache {
     fileLoader.setWithCredentials(loader.withCredentials);
 
     try {
-      // console.log('X: ATTEMPTING TO LOAD PART: ', fileName);
-      // console.log('X:   subjectURL=', subobjectURL);
       const text = await fileLoader.loadAsync(subobjectURL);
-      // console.log('X:   FOUND!');
-      // console.log('X: =============================');
       return text;
     } catch (_) {
-      console.log(`ZZZ: FAILED TO LOAD PART: ${subobjectURL}, ${baseFileName}`);
-
       throw new Error(
         'LDrawLoader: Subobject "' + fileName + '" could not be loaded.',
       );
-      // continue;
     }
-
-    // }
 
     throw new Error(
       'LDrawLoader: Subobject "' + fileName + '" could not be loaded.',
@@ -1026,7 +1015,6 @@ class LDrawPartsGeometryCache {
       // group which lets instruction steps apply correctly.
       for (let i = 0, l = subobjects.length; i < l; i++) {
         const subobject = subobjects[i];
-        // console.log('XX: ', subobject.fileName, info);
         const promise = parseCache
           .ensureDataLoaded(subobject.fileName, info.fileName)
           .then(() => {
