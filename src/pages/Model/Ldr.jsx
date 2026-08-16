@@ -6,6 +6,11 @@ import { LDrawConditionalLineMaterial } from 'three/addons/materials/LDrawCondit
 import { withBasePath } from '../../config';
 import { usePrefersDarkMode } from '../../hooks/usePrefersDarkMode';
 import { LDrawLoader } from '../../lib/LDrawLoaderCustom';
+import {
+  LDRAW_PARTS_LIBRARY_PATH,
+  getLdrawMaterialsText,
+  getPartsFileMap,
+} from '../../lib/ldrawResources';
 
 const Ldr = ({
   model: modelContents,
@@ -137,28 +142,17 @@ const Ldr = ({
 
       const lDrawLoader = new LDrawLoader();
       lDrawLoader.setConditionalLineMaterial(LDrawConditionalLineMaterial);
-      lDrawLoader.setPartsLibraryPath(
-        'https://raw.githubusercontent.com/mrkrstphr/ldraw-parts/main/',
-      );
+      lDrawLoader.setPartsLibraryPath(LDRAW_PARTS_LIBRARY_PATH);
 
-      // Load the parts map to eliminate 404s when resolving part paths
-      const partsMapResponse = await fetch(withBasePath('data/map.json'));
-      if (partsMapResponse.ok) {
-        const partsMap = await partsMapResponse.json();
+      // Both of these are fetched once and cached at module scope since a new
+      // LDrawLoader is created per model/submodel/dark-mode change but the
+      // underlying data never changes.
+      const fileMap = await getPartsFileMap(withBasePath('data/map.json'));
+      lDrawLoader.setFileMap(fileMap);
 
-        // The map has paths with leading slashes like "/parts/3001.dat"
-        // but the loader expects paths without leading slashes like "parts/3001.dat"
-        const normalizedMap = {};
-        for (const [key, value] of Object.entries(partsMap)) {
-          normalizedMap[key] = value.replace(/^\//, '');
-        }
+      const materialsText = await getLdrawMaterialsText();
+      lDrawLoader.addMaterialsFromText(materialsText);
 
-        lDrawLoader.setFileMap(normalizedMap);
-      }
-
-      await lDrawLoader.preloadMaterials(
-        'https://raw.githubusercontent.com/mrkrstphr/ldraw-parts/main/LDCfgalt.ldr',
-      );
       lDrawLoader.smoothNormals = true;
 
       lDrawLoader.parse(

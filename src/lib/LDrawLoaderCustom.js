@@ -1650,6 +1650,19 @@ class LDrawLoader extends Loader {
     fileLoader.setWithCredentials(this.withCredentials);
 
     const text = await fileLoader.loadAsync(url);
+    this.addMaterialsFromText(text);
+  }
+
+  /**
+   * Parses LDraw `!COLOUR` directives out of the given text and adds the
+   * resulting materials to the loader's material library. Useful for
+   * applying already-fetched materials data (e.g. cached across loader
+   * instances) without re-fetching it via preloadMaterials().
+   *
+   * @param {string} text - Raw LDraw materials text (e.g. LDCfgalt.ldr contents).
+   * @return {LDrawLoader} A reference to this loader.
+   */
+  addMaterialsFromText(text) {
     const colorLineRegex = /^0 !COLOUR/;
     const lines = text.split(/[\n\r]/g);
     const materials = [];
@@ -1665,6 +1678,8 @@ class LDrawLoader extends Loader {
     }
 
     this.addMaterials(materials);
+
+    return this;
   }
 
   /**
