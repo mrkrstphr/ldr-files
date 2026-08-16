@@ -7,6 +7,7 @@ export const initialState = {
   // Model state
   model: null,
   numBuildingSteps: 0,
+  missingPartsCount: 0,
 
   // Playback state
   currentBuildingStep: 0,
@@ -25,6 +26,7 @@ export function modelReducer(state, action) {
         model: action.payload.model,
         numBuildingSteps: action.payload.numBuildingSteps,
         currentBuildingStep: action.payload.numBuildingSteps,
+        missingPartsCount: action.payload.missingPartsCount || 0,
       };
 
     case 'TOGGLE_METADATA':
@@ -39,6 +41,7 @@ export function modelReducer(state, action) {
         selectedSubModel: action.payload,
         isPlaying: false,
         loading: true,
+        missingPartsCount: 0,
       };
 
     case 'PLAY':
@@ -117,6 +120,7 @@ export function modelReducer(state, action) {
         loading: true,
         selectedSubModel: '',
         isPlaying: false,
+        missingPartsCount: 0,
       };
 
     case 'SET_DEFAULT_SUBMODEL':

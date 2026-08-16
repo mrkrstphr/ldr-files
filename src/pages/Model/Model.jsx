@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import {
+  FiAlertTriangle,
   FiCamera,
   FiDownload,
   FiInfo,
@@ -48,6 +49,7 @@ export function Model() {
     playSpeed,
     looping,
     direction,
+    missingPartsCount,
   } = state;
 
   const canvasRef = useRef(null);
@@ -64,6 +66,7 @@ export function Model() {
       payload: {
         model,
         numBuildingSteps: model.userData.numBuildingSteps || 1,
+        missingPartsCount: model.userData.missingParts?.length || 0,
       },
     });
   }, []);
@@ -340,6 +343,21 @@ export function Model() {
         {metadataOpen && metadata && (
           <div className="glass-panel p-3.5">
             <Metadata metadata={metadata} />
+          </div>
+        )}
+
+        {!loading && missingPartsCount > 0 && (
+          <div
+            className="glass-panel flex items-center gap-2 px-3.5 py-2 text-[13px]"
+            style={{ color: 'var(--accent-yellow)' }}
+            title={model?.userData.missingParts?.join(', ')}
+          >
+            <FiAlertTriangle className="flex-shrink-0" />
+            <span>
+              {missingPartsCount === 1
+                ? '1 part failed to load — model may be incomplete.'
+                : `${missingPartsCount} parts failed to load — model may be incomplete.`}
+            </span>
           </div>
         )}
 

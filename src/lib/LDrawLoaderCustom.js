@@ -1023,6 +1023,7 @@ class LDrawPartsGeometryCache {
               return this.loadModel(subobject.fileName, info.fileName).catch(
                 (error) => {
                   console.warn(error);
+                  loader.missingParts.push(subobject.fileName);
                   return null;
                 },
               );
@@ -1037,6 +1038,7 @@ class LDrawPartsGeometryCache {
             // the part/subobject couldn't be found or failed to parse - skip it
             // instead of letting the failure bubble up and abort the whole model.
             console.warn(error);
+            loader.missingParts.push(subobject.fileName);
             return null;
           });
 
@@ -1557,6 +1559,12 @@ class LDrawLoader extends Loader {
     // This also allows to handle the embedded text files ("0 FILE" lines)
     this.partsCache = new LDrawPartsGeometryCache(this);
 
+    // Subobjects (parts/primitives) that failed to load or parse during the
+    // most recent parse()/load() call. Populated by LDrawPartsGeometryCache
+    // and copied onto the resulting group's userData so callers can surface
+    // a "model may be incomplete" notice without aborting the whole load.
+    this.missingParts = [];
+
     // This object is a map from file names to paths. It agilizes the paths search. If it is not set then files will be searched by trial and error.
     this.fileMap = {};
 
@@ -1689,6 +1697,7 @@ class LDrawLoader extends Loader {
       (text) => {
         // Initializes the materials library with default materials
         this.addDefaultMaterials();
+        this.missingParts = [];
 
         this.partsCache
           .parseModel(text)
@@ -1701,6 +1710,7 @@ class LDrawLoader extends Loader {
             );
             this.computeBuildingSteps(group);
             group.userData.fileName = url;
+            group.userData.missingParts = this.missingParts;
             onLoad(group);
           })
           .catch(onError);
@@ -1718,6 +1728,8 @@ class LDrawLoader extends Loader {
    * @param {onErrorCallback} onError - Executed when errors occur.
    */
   parse(text, onLoad, onError) {
+    this.missingParts = [];
+
     this.partsCache
       .parseModel(text)
       .then((group) => {
@@ -1729,6 +1741,7 @@ class LDrawLoader extends Loader {
         );
         this.computeBuildingSteps(group);
         group.userData.fileName = '';
+        group.userData.missingParts = this.missingParts;
         onLoad(group);
       })
       .catch(onError);
